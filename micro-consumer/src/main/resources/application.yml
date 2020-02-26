@@ -1,0 +1,38 @@
+server:
+  port: 8209
+spring:
+  application:
+    name: micro-consumer
+  cloud:
+    consul:
+      host: 172.17.0.1
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8209/actuator/health
+  boot:
+    admin:
+      client:
+        url: "http://172.17.0.1:8205"
+  zipkin:
+    base-url: http://172.17.0.1:9411/
+  sleuth:
+    sampler:
+      probability: 1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+
+service-producer: upload-apk
+ribbon:
+  NFLoadBalanceRuleClassName: com.netflix.loadbalancer.RandRule
+feign:
+  hystrix:
+    enabled: true

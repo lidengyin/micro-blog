@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: upload-apk
+  cloud:
+    config:
+      discovery:
+        service-id: config-server #配置中心
+        enabled: true #开启发现服务
+      name: user-server
+      profile: pro #对应{profiles}部分
+      label: master
+    consul:
+      host: 172.17.0.1
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8207/actuator/health
+  zipkin:
+    base-url: http://172.17.0.1:9411/
+    sleuth:
+      sampler:
+        probability: 1
+
+feign:
+  hystrix:
+    enabled: true
+
+endpoint: "oss-cn-shenzhen.aliyuncs.com"
+accessKeyId: "LTAI4Fn8YhRW2FkbpucSR5AX"
+accessKeySecret: "yuYPFquHRK3UHHKq3YlV0MBUaWjLdC"
+bucketName: "hcnet2006-file-apk.oss-cn-shenzhen.aliyuncs.com"
+firstKey: "my-first-key"

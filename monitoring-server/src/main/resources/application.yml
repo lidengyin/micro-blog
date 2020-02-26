@@ -1,0 +1,12 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: "http://172.17.0.1:8205"
+
+server:
+  port: 8202
+turbine:
+  app-config: micro-consumer
+  combine-host-port: true
+  cluster-name-expression: "'default'"

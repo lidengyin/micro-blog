@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: monitoring-server
+  cloud:
+    consul:
+      port: 8500
+      host: 172.17.0.1
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8202/actuator/health
+    config:
+      label: master
+      discovery:
+        service-id: config-server
+        enabled: true
+      name: monitoring-server
+      profile: pro

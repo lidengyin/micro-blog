@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!--继承主Maven的POM 文件-->
+    <parent>
+        <groupId>cn.hcnet2006.blog</groupId>
+        <artifactId>blog-base</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <groupId>cn.hcnet2006.blog</groupId>
+    <artifactId>config-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <!--打包方式-->
+    <packaging>jar</packaging>
+    <name>config-server</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <spring-boot-admin.version>2.2.2</spring-boot-admin.version>
+    </properties>
+
+    <dependencies>
+        <!--集成配置中心服务器依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+        <!--集成注册中心依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+        <!--集成监控中心-->
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring-boot-admin.version}</version>
+        </dependency>
+        <!--添加消息总线-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+    </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!--使用Maven和Dockerfile命令构建镜像-->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <imageName>${project.name}:${project.version}</imageName>
+                    <baseImage>java</baseImage>
+                    <entryPoint>
+                        {"java","-jar","/${project.build.finalName}.jar"}
+                    </entryPoint>
+                    <!--                    <dockerDirectory>-->
+                    <!--                        ${project.basedir}/src/main/docker-->
+                    <!--                    </dockerDirectory>-->
+                    <skipDockerBuild>false</skipDockerBuild>
+                    <resources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
