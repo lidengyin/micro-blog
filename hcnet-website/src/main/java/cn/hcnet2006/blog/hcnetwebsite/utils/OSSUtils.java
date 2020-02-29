@@ -1,19 +1,16 @@
-package cn.hcnet2006.blog.uploadapk.utils;
-
-import cn.hcnet2006.blog.uploadapk.constant.OSSConstant;
-import com.aliyun.oss.*;
+package cn.hcnet2006.blog.hcnetwebsite.utils;
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
-import com.aliyuncs.OssAcsRequest;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.annotated.AnnotatedDeleteByPrimaryKeyMethodGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -24,7 +21,7 @@ import java.util.Date;
  */
 public class OSSUtils {
     @Autowired
-    private  static OSSConstant ossConstant;
+    //private  static OSSConstant ossConstant;
     static String bucketName = "hcnet2006-file-apk";
 
     static String accessKeyId = "LTAI4Fn8YhRW2FkbpucSR5AX";
@@ -32,11 +29,11 @@ public class OSSUtils {
     static String accessKeySecret = "yuYPFquHRK3UHHKq3YlV0MBUaWjLdC";
 
     static String endpoint = "oss-cn-shenzhen.aliyuncs.com";
-    private static OSS ossClient =  new OSSClientBuilder().build(endpoint,accessKeyId,
-            accessKeySecret);
+    private static OSS ossClient ;
     private  static  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
     public static String upload(File file,String apkName){
-
+        ossClient =  new OSSClientBuilder().build(endpoint,accessKeyId,
+                accessKeySecret);
 
         System.out.println("accessKeyId2:"+accessKeyId);
 
@@ -66,7 +63,7 @@ public class OSSUtils {
             // 设置这个文件地址的有效时间
             Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
 
-            String url = ossClient.generatePresignedUrl(bucketName, "海行健V2.0", expiration).toString();
+            String url = ossClient.generatePresignedUrl(bucketName, apkName, expiration).toString();
 
             System.out.println("object:"+apkName+"存入成功");
             System.out.println("上传路径："+url);

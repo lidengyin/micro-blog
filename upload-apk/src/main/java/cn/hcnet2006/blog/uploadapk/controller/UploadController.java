@@ -3,6 +3,7 @@ package cn.hcnet2006.blog.uploadapk.controller;
 import brave.http.HttpRequest;
 import cn.hcnet2006.blog.uploadapk.bean.SysApk;
 import cn.hcnet2006.blog.uploadapk.config.OSSConfig;
+import cn.hcnet2006.blog.uploadapk.constant.OSSConstant;
 import cn.hcnet2006.blog.uploadapk.http.HttpResult;
 import cn.hcnet2006.blog.uploadapk.page.PageRequest;
 import cn.hcnet2006.blog.uploadapk.page.PageResult;
@@ -11,11 +12,12 @@ import cn.hcnet2006.blog.uploadapk.utils.ApkInfoUtil;
 import cn.hcnet2006.blog.uploadapk.utils.HttpUtils;
 import cn.hcnet2006.blog.uploadapk.utils.OSSUtils;
 import com.aliyun.oss.OSS;
-import com.google.gson.internal.$Gson$Preconditions;
-import com.netflix.ribbon.proxy.annotation.Http;
+//import com.google.gson.internal.$Gson$Preconditions;
+//import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +39,18 @@ import java.util.UUID;
 public class UploadController {
     @Autowired
     private SysApkService sysApkService;
-    //private OSS ossClient = OSSConfig.ossClient();
+
     //文件按时间结构存储
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
     @ApiOperation(value = "文件上传",notes = "文件上传")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query",name = "createBy",dataType = "String",required = true)
     })
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/apk")
     public HttpResult upload(@ApiParam(value = "uploadFile",required = true) MultipartFile uploadFile,String createBy, HttpServletRequest req) throws NullPointerException, IOException {
+
+
         //获取文件大小
         String apkSize = uploadFile.getSize()+"";
         //应用类型
@@ -105,10 +109,15 @@ public class UploadController {
             sysApk.setLastUpdateBy(createBy);
             sysApk.setLastUpdateTime(new Date());
             sysApk.setApkSize(apkSize);
-            sysApk.setApkUrl(filePath);
+            //sysApk.setApkUrl(filePath);
             sysApk.setDelFlag((byte)0);
+
+            String apkUrl = OSSUtils.upload(convFile,apkName);
+            apkUrl = apkUrl.substring(0,apkUrl.indexOf("?"));
+            System.out.println("apkurl:"+apkUrl);
+            System.out.println("url:"+sysApk.getApkUrl());
+            sysApk.setApkUrl(apkUrl);
             sysApkService.save(sysApk);
-            OSSUtils.upload(convFile,apkName);
             return HttpResult.ok(filePath);
         }catch (IOException e){
             e.printStackTrace();
@@ -117,16 +126,20 @@ public class UploadController {
         return HttpResult.error("上传失败");
     }
 
-    @ApiOperation(value = "下载信息接口",notes = "下载信息接口")
-    @ApiImplicitParams({
-            @ApiImplicitParam(type = "query",name = "id",value = "资源序号",required = true)
-    })
-    @PostMapping("/download")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*",allowCredentials = "true")
-    public  void download(String id, HttpServletResponse resp,HttpServletRequest req){
-        try{
-            OSSUtils.download("海行健V2.0",req,resp);
+//    @ApiOperation(value = "下载信息接口",notes = "下载信息接口")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(type = "query",name = "id",value = "资源序号",required = true)
+//    })
+//    @PostMapping("/download")
+//    //@PreAuthorize("hasAuthority('ROLE_USER')")
+//    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*",allowCredentials = "true")
+//    public  String  download(Long id, HttpServletResponse resp,HttpServletRequest req){
+//        try{
+//            SysApk sysApk = sysApkService.findById(id);
+//            if (sysApk.getDelFlag() == -1){
+//                return "链接失效";
+//            }
+//            OSSUtils.download("海行健V2.0",req,resp);
 //            System.out.println("id:"+id);
 //            //根据主键获取对应文件
 //            SysApk sysApk = sysApkService.findById(Long.parseLong(id));
@@ -181,12 +194,12 @@ public class UploadController {
 //            in.close();
 //            //关闭输出流
 //            out.close();
-           // return HttpResult.ok("下载成功");
-        }catch (Exception e){
-            e.printStackTrace();
-            //return HttpResult.error("下载失败");
-        }
-    }
+//            return HttpResult.ok("下载成功");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            //return HttpResult.error("下载失败");
+//        }
+//    }
     @ApiOperation(value = "根据删除标志，分页查看上传文件",notes = "根据删除标志，分页查看上传文件")
     @ApiImplicitParams({
 //            @ApiImplicitParam(type = "query", name = "pageNum", value = "页码",required = true),

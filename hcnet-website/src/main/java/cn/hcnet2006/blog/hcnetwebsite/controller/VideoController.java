@@ -7,7 +7,7 @@ import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.impl.VideoService;
 import cn.hcnet2006.blog.hcnetwebsite.utils.ImageAndVideoUtils;
-import cn.hcnet2006.blog.hcnetwebsite.utils.ReflectionUtils;
+import cn.hcnet2006.blog.hcnetwebsite.utils.OSSUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,24 +57,52 @@ public class VideoController {
     @PostMapping(value = "/upload",headers = "content-type=multipart/form-data")
     public HttpResult uploadVideo(SysVideo video, @ApiParam(value = "视频文件",required = true) MultipartFile uploadFile, HttpServletRequest request)throws IOException{
         SysVideo sysVideo = new SysVideo();
-        //存储绝对路径
+        //存储服务器暂存视频绝对路径
         String videoUrl = ResourceUtils.getURL("").getPath()+"upload/video/video/"+sdf.format(new Date())+UUID.randomUUID().toString()+(uploadFile.getOriginalFilename()).substring(uploadFile.getOriginalFilename().lastIndexOf("."));
+        //存储服务器暂存截图绝对路径
         String imageUrl = ResourceUtils.getURL("").getPath()+"upload/video/Img/"+sdf.format(new Date())+UUID.randomUUID().toString()+".jpg";
+        //获取文件目录
         File folder = new File(videoUrl);
         //目录不存在就建一个
         if(!(folder.isDirectory())){
             folder.mkdirs();
         }
         try{
+            //将上传文件转移到服务器新建目录中
             uploadFile.transferTo(folder);
+            //设置创建时间
             sysVideo.setCreateTime(new Date());
-            ImageAndVideoUtils.fetchFrame(videoUrl, imageUrl);
-            //保存视频
-           // SysVideo = new SysVideo(imageUrl, videoUrl, video.getVideoName(),video.getVideoDetail(), video.getCreateBy() )
-            sysVideo.setVideoImgUrl(imageUrl);sysVideo.setVideoName(video.getVideoName());
-            sysVideo.setVideoUrl(videoUrl);sysVideo.setVideoDetail(video.getVideoDetail());
-            sysVideo.setUpdateTime(new Date());sysVideo.setDelIt("0");
+            //获取服务器暂存视频文件
+            File convVideoFile = new File(videoUrl);
+            //设置视频名
+            sysVideo.setVideoName(video.getVideoName());
+            //设置视频详情
+            sysVideo.setVideoDetail(video.getVideoDetail());
+            //设置更新日期
+            sysVideo.setUpdateTime(new Date());
+            //设置删除标志
+            sysVideo.setDelIt("0");
+            //设置删除标志
             sysVideo.setDelFlag((byte)0);
+            //上传文件到阿里云OSSBucket
+            String video_Url = OSSUtils.upload(convVideoFile,video.getVideoName()+(uploadFile.getOriginalFilename()).substring(uploadFile.getOriginalFilename().lastIndexOf(".")));
+            //去除accessKeyIDangAccessKeySecret
+            video_Url = video_Url.substring(0,video_Url.indexOf("?"));
+            //设置https下载
+            video_Url = "https"+video_Url.substring(4,video_Url.length());
+            System.out.println("videoUrl:"+video_Url);
+            //获取屏幕截图
+            ImageAndVideoUtils.fetchFrame(video_Url, imageUrl);
+            //获取服务器暂存文件
+            File convImageFile = new File(imageUrl);
+            System.out.println("Image_URL:"+imageUrl);
+            //上传
+            String image_Url = OSSUtils.upload(convImageFile,video.getVideoName()+"fetchImage.jpg");
+            image_Url = image_Url.substring(0,image_Url.indexOf("?"));
+            image_Url="https"+image_Url.substring(4,image_Url.length());
+            System.out.println("Image_URL:"+image_Url);
+            sysVideo.setVideoUrl(video_Url);
+            sysVideo.setVideoImgUrl(image_Url);
             videoService.saveVideo(sysVideo);
             return HttpResult.ok(sysVideo);
         }catch(Exception e){

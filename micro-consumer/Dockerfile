@@ -1,7 +1,7 @@
 FROM java:8
 MAINTAINER lidengyin
 ARG JAR_FILE
-ADD ${JAR_FILE} hcnet-website.jar
-EXPOSE 8206
-ENTRYPOINT ["java","-jar","hcnet-website.jar"]
+ADD ${JAR_FILE} micro-consumer.jar
+EXPOSE 8209
+ENTRYPOINT ["java","-jar","micro-consumer.jar"]
 

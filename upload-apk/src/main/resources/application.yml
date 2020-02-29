@@ -3,12 +3,6 @@ server:
 spring:
   application:
     name: upload-apk
-#  cloud:
-#    consul:
-#      host: localhost
-#      port: 8500
-#      discovery:
-#        service-name: ${spring.application.name}
   servlet:
     multipart:
       enabled: true
@@ -24,9 +18,8 @@ spring:
     name: druidDataSource
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
-
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://172.17.0.1:3306/hc_file_upload_apk_ldy?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://172.17.0.1:3306/hc_file_upload_apk_ldy?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
       filters: stat, wall, config
       initial-size: 1
       max-active: 100

@@ -35,14 +35,15 @@ public class QrCodeController {
     public void createCommonQRCode(HttpServletResponse response,
                               Long id) throws IOException {
         System.out.println("id:"+id);
-        String url = "http://localhost:8207/file/download?id="+id;
+        SysApk sysApk = sysApkService.findById(id);
+        String url = sysApk.getApkUrl();
         ServletOutputStream stream = null;
         try{
-            SysApk sysApk = sysApkService.findById(id);
+            //SysApk sysApk = sysApkService.findById(id);
             stream = response.getOutputStream();
             //produce the QRCode
             QRCodeUtil.encode(url,
-                    "/home/lidengyin/IdeaProjects/Blog-Micro/upload-apk/src/main/resources/th.jpeg",sysApk.getApkName(),stream,true);
+                    "./th.jpeg",sysApk.getApkName(),stream,true);
         }catch (Exception e){
             e.printStackTrace();
         }finally {

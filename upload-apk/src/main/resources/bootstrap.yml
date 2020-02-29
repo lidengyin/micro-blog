@@ -25,9 +25,9 @@ spring:
 feign:
   hystrix:
     enabled: true
-
+#
 endpoint: "oss-cn-shenzhen.aliyuncs.com"
 accessKeyId: "LTAI4Fn8YhRW2FkbpucSR5AX"
 accessKeySecret: "yuYPFquHRK3UHHKq3YlV0MBUaWjLdC"
-bucketName: "hcnet2006-file-apk.oss-cn-shenzhen.aliyuncs.com"
+bucketName: "hcnet2006-file-apk"
 firstKey: "my-first-key"

@@ -5,16 +5,18 @@ spring:
     name: log-server
   cloud:
     consul:
-      host: localhost
+      host: 172.17.0.1
       port: 8500
       discovery:
         service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8206/actuator/health
   boot:
     admin:
       client:
-        url: "http://localhost:8205"
+        url: "http://172.17.0.1:8205"
         instance:
-          service-base-url: "http://localhost:8205"
+          service-base-url: "http://172.17.0.1:8205"
   rabbitmq:
     host: localhost
     port: 5672
@@ -28,7 +30,7 @@ spring:
     druid:
 
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://47.97.170.173:3306/lidengyin_mango?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      url: jdbc:mysql://172.17.0.1:3306/lidengyin_mango?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
       username: root
       password: 123456
       filters: stat, wall, config
