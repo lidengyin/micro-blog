@@ -16,10 +16,8 @@
     delete from sys_dept
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysDept">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysDept">
+
     insert into sys_dept (id, name, dept_logo, 
       parent_id, create_by, create_time, 
       last_update_time, last_update_by, del_flag

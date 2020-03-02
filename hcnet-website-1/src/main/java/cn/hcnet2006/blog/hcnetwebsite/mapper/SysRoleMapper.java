@@ -1,8 +1,10 @@
 package cn.hcnet2006.blog.hcnetwebsite.mapper;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
-import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+@Mapper
 public interface SysRoleMapper {
     int deleteByPrimaryKey(Long id);
 

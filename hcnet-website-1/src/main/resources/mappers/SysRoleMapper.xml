@@ -15,10 +15,8 @@
     delete from sys_role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole">
+
     insert into sys_role (id, name, remark, 
       create_by, create_time, last_update_time, 
       last_update_by, del_flag)

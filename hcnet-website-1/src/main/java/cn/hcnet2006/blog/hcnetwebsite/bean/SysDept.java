@@ -1,5 +1,8 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,9 +16,11 @@ public class SysDept implements Serializable {
     private Long parentId;
 
     private String createBy;
-
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date lastUpdateTime;
 
     private String lastUpdateBy;
