@@ -3,7 +3,7 @@ package cn.hcnet2006.blog.hcnetwebsite.security;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
 import cn.hcnet2006.blog.hcnetwebsite.exception.UserLoginException;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
-import cn.hcnet2006.blog.hcnetwebsite.utils.PassWordEncoderUtil;
+import cn.hcnet2006.blog.hcnetwebsite.util.PassWordEncoderUtil;
 import cn.hcnet2006.blog.hcnetwebsite.vo.JWT;
 import cn.hcnet2006.blog.hcnetwebsite.vo.UserLoginDTO;
 import org.springframework.beans.factory.annotation.Autowired;

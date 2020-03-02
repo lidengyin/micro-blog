@@ -37,6 +37,7 @@
         <module>upload-apk</module>
         <module>micro-consumer</module>
         <module>hcnet-website</module>
+        <module>hcnet-website-1</module>
     </modules>
     <!--公共依赖-->
     <dependencies>

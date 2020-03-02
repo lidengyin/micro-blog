@@ -50,7 +50,7 @@
     <!--Mappper接口生成器-->
     <javaClientGenerator type="XMLMAPPER" targetPackage="cn.hcnet2006.blog.hcnetwebsite.mapper" targetProject="./upload-apk/src/main/java"/>
     <!--数据库表配置-->
-    <table tableName="sys_apk">
+    <table tableName="sys_user">
         <!--数据库主键生成策略-->
         <generatedKey column="id" sqlStatement="Mysql"/>
     </table>

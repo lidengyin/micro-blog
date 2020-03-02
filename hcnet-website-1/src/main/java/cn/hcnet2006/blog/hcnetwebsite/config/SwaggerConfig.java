@@ -15,15 +15,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@Configuration
 @EnableSwagger2
+@Configuration
+
 public class SwaggerConfig {
     @Bean
     public Docket api() {
         //添加head参数start
         ParameterBuilder tokenPar = new ParameterBuilder();
-        List<Parameter> pars = new ArrayList<Parameter>();
+        List<Parameter> pars = new ArrayList<>();
         tokenPar.name("Authorization").description("令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
         pars.add(tokenPar.build());
         //添加head参数end

@@ -1,0 +1,54 @@
+
+server:
+  port: 8211 #应用端口
+spring:
+  application:
+    name: hcnet-website #应用名
+  servlet: #上传配置
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 10000000
+      max-request-size: 10000000
+      resolve-lazily: false
+  datasource: #数据库配置
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql:///hc_official_website_1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      filters: stat, wall, config
+      initial-size: 1
+      max-active: 100
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 50
+      max-pool-prepared-statement-per-connection-size: 20
+#  rabbitmq: #消息中间件
+#    host: 47.97.170.173
+#    port: 5672
+#    username: guest
+#    password: guest
+#    virtual-host: /
+#management: #暴露健康状况
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always
+mybatis: #Mybaytis映射文件位置
+  mapper-locations: classpath:/mappers/*Mapper.xml
+#feign: #开启熔断
+#  hystrix:
+#    enabled: true

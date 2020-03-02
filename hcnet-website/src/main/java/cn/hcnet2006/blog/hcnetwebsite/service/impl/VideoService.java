@@ -5,7 +5,7 @@ import cn.hcnet2006.blog.hcnetwebsite.mapper.SysVideoMapper;
 import cn.hcnet2006.blog.hcnetwebsite.page.MybatisPageHelper;
 import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
-import cn.hcnet2006.blog.hcnetwebsite.utils.ReflectionUtils;
+import cn.hcnet2006.blog.hcnetwebsite.util.ReflectionUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;

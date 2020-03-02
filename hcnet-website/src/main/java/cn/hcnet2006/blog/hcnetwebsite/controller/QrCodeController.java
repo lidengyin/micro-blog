@@ -2,7 +2,7 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysApk;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysApkService;
-import cn.hcnet2006.blog.hcnetwebsite.utils.QRCodeUtil;
+import cn.hcnet2006.blog.hcnetwebsite.util.QRCodeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

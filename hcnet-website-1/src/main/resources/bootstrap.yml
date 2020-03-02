@@ -1,0 +1,23 @@
+#spring:
+#  application:
+#    name: hcnet-website
+#  cloud:
+#    consul: #服务发现
+#      host: localhost
+#      port: 8500
+#      discovery:
+#        service-name: ${spring.application.name}
+#        hostname: localhost
+#        health-check-url: http://localhost:8211/actuator/health
+#    config: #服务配置
+#      discovery:
+#        service-id: config-server
+#        enabled: true
+#      name: user-server
+#      profile: pro
+#      label: master
+#  zipkin: #链路追踪
+#    base-url: http://localhost:9411/
+#  sleuth:
+#    sampler:
+#      probability: 1

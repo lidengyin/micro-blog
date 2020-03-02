@@ -1,4 +1,4 @@
-package cn.hcnet2006.blog.hcnetwebsite.page;
+package cn.hcnet2006.blog.hcnetwebsite.pages;
 
 import cn.hcnet2006.blog.hcnetwebsite.util.ReflectionUtils;
 import com.github.pagehelper.PageHelper;
