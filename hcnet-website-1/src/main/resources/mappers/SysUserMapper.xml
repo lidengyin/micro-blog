@@ -83,9 +83,30 @@
     from sys_user
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysUser" resultMap="BaseResultMap">
     select id, name, password, avator, grade, email, mobile, dept_id, create_by, create_time, 
     last_update_time, last_update_by, del_flag
     from sys_user
+    where
+    1 = 1
+    <if test="id != null and id != ''">
+        and id = #{id}
+    </if>
+    <if test="name != null and name != ''">
+        and name like concat('%',#{name},'%')
+    </if>
+    <if test="deptId != null and deptId != ''">
+        and dept_id = #{deptId}
+    </if>
+<!--      <if test="delFlag != null and delFlag != ''">-->
+<!--          and del_flag = #{delFlag,jdbcType=TINYINT}-->
+<!--      </if>-->
+    <if test="grade != null and grade != ''">
+        and grade = #{grade}
+    </if>
+    <if test="delFlag != null">
+        and del_flag = #{delFlag}
+    </if>
+
   </select>
 </mapper>

@@ -2,6 +2,8 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import io.swagger.annotations.*;
@@ -9,16 +11,17 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Api(tags = "用户信息接口")
@@ -27,6 +30,7 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     private SysUserService sysUserService;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     //private String url = "/usr/local/spring";
     @ApiOperation(value = "用户注册",notes = "用户注册" +
             "参数包括：" +
@@ -68,6 +72,7 @@ public class UserController {
             //删除标志
             sysUser.setDelFlag((byte)0);
             //保存
+            System.out.println("time:"+sdf.format(new Date()));
             sysUserService.save(sysUser);
             return HttpResult.ok(sysUser);
         }catch (DuplicateKeyException e){
@@ -91,7 +96,7 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
             //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
     })
-    @PostMapping("/update")
+    @PutMapping("/update")
     public HttpResult update(SysUser sysUser, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
         try{
             if (uploadFile !=null){
@@ -105,10 +110,28 @@ public class UserController {
             sysUser.setLastUpdateTime(new Date());
             sysUserService.update(sysUser);
             return HttpResult.ok(sysUser);
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
             return HttpResult.error("用户修改失败");
         }
-
     }
+    @ApiOperation(value = "分页查看用户列表",notes = "分页查看用户列表:可选参数列表，以and的形式，随机组合，不加参数就是全选\n" +
+            "@ApiImplicitParam(type = \"query\", name=\"id\",value = \"用户编号\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"name\",value = \"用户名\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"deptId\",value = \"所属方向ID\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"grade\",value = \"年级，比如2018\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
+    })
+    @PostMapping("/find/page")
+    public HttpResult find(int pageNum, int pageSize, @RequestBody SysUser sysUser){
+        Map<String, Object> map = new HashMap<>();
+        map.put("sysUser",sysUser);
+        PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
+        PageResult pageResult = sysUserService.findPage(pageRequest);
+        return HttpResult.ok(pageResult);
+    }
+
 }

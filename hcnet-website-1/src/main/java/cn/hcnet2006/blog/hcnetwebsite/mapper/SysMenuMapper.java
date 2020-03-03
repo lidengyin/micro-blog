@@ -12,7 +12,7 @@ public interface SysMenuMapper {
 
     SysMenu selectByPrimaryKey(Long id);
 
-    List<SysMenu> selectAll();
+    List<SysMenu> selectAll(SysMenu sysMenu);
 
     int updateByPrimaryKey(SysMenu record);
 }

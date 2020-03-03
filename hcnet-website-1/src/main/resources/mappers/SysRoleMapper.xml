@@ -57,9 +57,19 @@
     from sys_role
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole" resultMap="BaseResultMap">
     select id, name, remark, create_by, create_time, last_update_time, last_update_by, 
     del_flag
     from sys_role
+    where 1=1
+    <if test="id != null and id != ''">
+      and id = #{id}
+    </if>
+    <if test="name != null and name != ''">
+      and name like concat('%',#{name},'%')
+    </if>
+    <if test="delFlag != null">
+      and del_flag = #{delFlag}
+    </if>
   </select>
 </mapper>

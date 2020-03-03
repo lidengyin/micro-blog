@@ -2,6 +2,7 @@ package cn.hcnet2006.blog.hcnetwebsite.service.impl;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
 import cn.hcnet2006.blog.hcnetwebsite.mapper.SysRoleMapper;
+import cn.hcnet2006.blog.hcnetwebsite.pages.MybatisPageHelper;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysRoleService;
@@ -35,7 +36,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public PageResult findPage(PageRequest pageRequest) {
-        return null;
+        return MybatisPageHelper.findPage(pageRequest,sysRoleMapper, "selectAll", pageRequest.getParam("sysRole"));
     }
 
     @Override

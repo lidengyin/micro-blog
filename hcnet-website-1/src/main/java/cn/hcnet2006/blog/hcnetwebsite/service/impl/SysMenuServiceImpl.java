@@ -2,6 +2,7 @@ package cn.hcnet2006.blog.hcnetwebsite.service.impl;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu;
 import cn.hcnet2006.blog.hcnetwebsite.mapper.SysMenuMapper;
+import cn.hcnet2006.blog.hcnetwebsite.pages.MybatisPageHelper;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysMenuService;
@@ -35,7 +36,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public PageResult findPage(PageRequest pageRequest) {
-        return null;
+        return MybatisPageHelper.findPage(pageRequest, sysMenuMapper, "selectAll", pageRequest.getParam("sysMenu"));
     }
 
     @Override

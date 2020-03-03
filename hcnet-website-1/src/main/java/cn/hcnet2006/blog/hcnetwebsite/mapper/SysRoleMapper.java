@@ -12,7 +12,7 @@ public interface SysRoleMapper {
 
     SysRole selectByPrimaryKey(Long id);
 
-    List<SysRole> selectAll();
+    List<SysRole> selectAll(SysRole sysRole);
 
     int updateByPrimaryKey(SysRole record);
     int updateByPrimaryKey(List<SysRole> record);

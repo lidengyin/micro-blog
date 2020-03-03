@@ -2,6 +2,8 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysDeptService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import io.swagger.annotations.*;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Api(tags = "机构信息接口")
@@ -83,5 +88,28 @@ public class DeptController {
             return HttpResult.error("机构修改失败");
         }
     }
+    @ApiOperation(value = "分页查询机构信息",notes = "分页显示机构信息\n" +
+            "可选参数进行and组合，全部为空则为查询全部\n" +
+            "@ApiImplicitParam(type = \"query\",name = \"id\",value = \"机构编号\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\",name = \"name\",value = \"机构名\"),\n" +
+            "            @ApiImplicitParam(type = \"query\",name = \"parentId\",value = \"上级机构ID，一级机构为0\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true)
 
+    })
+    @PostMapping("/find/page")
+    public HttpResult find(int pageNum, int pageSize, @RequestBody SysDept sysDept){
+        try{
+            Map<String, Object> map = new HashMap<>();
+            map.put("sysDept",sysDept);
+            PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
+            PageResult pageResult = sysDeptService.findPage(pageRequest);
+            return HttpResult.ok(pageResult);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("查询失败");
+        }
+    }
 }

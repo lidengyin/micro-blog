@@ -4,6 +4,8 @@ import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysMenuService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import io.swagger.annotations.*;
@@ -18,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Api(tags = "菜单信息接口")
 @RestController
@@ -75,6 +75,30 @@ public class MenuController {
         }catch (Exception e){
             e.printStackTrace();
             return HttpResult.error("菜单修改失败");
+        }
+    }
+    @ApiOperation(value = "分页菜单查询",notes = "分页菜单查询\n" +
+            "可查询参数：@ApiImplicitParams({\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"id\", value = \"菜单编号\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"name\",value = \"菜单名\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"parentId\",value = \"父菜单ID，一级菜单为0\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"perms\",value = \"授权\"),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")\n" +"")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
+    })
+    @PostMapping("/find/page")
+    public HttpResult find(int pageNum, int pageSize, @RequestBody  SysMenu sysMenu){
+        try{
+            Map<String, Object> map = new HashMap<>();
+            map.put("sysMenu",sysMenu);
+            PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
+            PageResult pageResult = sysMenuService.findPage(pageRequest);
+            return HttpResult.ok(pageResult);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("菜单查询失败");
         }
     }
 }

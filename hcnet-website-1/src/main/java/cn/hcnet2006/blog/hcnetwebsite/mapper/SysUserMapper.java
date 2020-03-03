@@ -12,7 +12,7 @@ public interface SysUserMapper {
 
     SysUser selectByPrimaryKey(Long id);
 
-    List<SysUser> selectAll();
+    List<SysUser> selectAll(SysUser sysUser);
 
     int updateByPrimaryKey(SysUser record);
 }

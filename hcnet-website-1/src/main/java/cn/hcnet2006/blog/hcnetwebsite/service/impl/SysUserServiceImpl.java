@@ -2,6 +2,7 @@ package cn.hcnet2006.blog.hcnetwebsite.service.impl;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
 import cn.hcnet2006.blog.hcnetwebsite.mapper.SysUserMapper;
+import cn.hcnet2006.blog.hcnetwebsite.pages.MybatisPageHelper;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
@@ -37,7 +38,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public PageResult findPage(PageRequest pageRequest) {
-        return null;
+        return MybatisPageHelper.findPage(pageRequest, sysUserMapper, "selectAll", pageRequest.getParam("sysUser"));
     }
 
     @Override

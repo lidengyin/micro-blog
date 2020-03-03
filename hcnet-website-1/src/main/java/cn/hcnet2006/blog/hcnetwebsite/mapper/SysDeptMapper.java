@@ -12,7 +12,7 @@ public interface SysDeptMapper {
 
     SysDept selectByPrimaryKey(Long id);
 
-    List<SysDept> selectAll();
+    List<SysDept> selectAll(SysDept sysDept);
 
     int updateByPrimaryKey(SysDept record);
 }

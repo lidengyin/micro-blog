@@ -63,10 +63,26 @@
     from sys_menu
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu" resultMap="BaseResultMap">
     select id, parent_id, name, perms, create_by, create_time, last_update_time, last_update_by, 
     del_flag
     from sys_menu
+    where 1=1
+    <if test="id != null and id != ''">
+      and id = #{id}
+    </if>
+    <if test="parentId != null and parentId != ''">
+      and parent_id = #{parentId}
+    </if>
+    <if test="name != null and name != ''">
+      and name like concat('%',#{name},'%')
+    </if>
+    <if test="perms != null and perms != ''">
+      and perms = #{perms}
+    </if>
+    <if test="delFlag != null">
+      and del_flag = #{delFlag}
+    </if>
   </select>
 
 </mapper>
