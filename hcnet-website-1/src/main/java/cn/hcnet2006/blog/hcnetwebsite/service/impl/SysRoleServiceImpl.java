@@ -37,4 +37,14 @@ public class SysRoleServiceImpl implements SysRoleService {
     public PageResult findPage(PageRequest pageRequest) {
         return null;
     }
+
+    @Override
+    public int update(SysRole record) {
+        return sysRoleMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public int update(List<SysRole> records) {
+        return sysRoleMapper.updateByPrimaryKey(records);
+    }
 }

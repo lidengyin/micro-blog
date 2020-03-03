@@ -35,20 +35,46 @@
       #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}, #{lastUpdateBy,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysUser">
+  <update id="updateByPrimaryKey" useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysUser">
     update sys_user
-    set name = #{name,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      avator = #{avator,jdbcType=VARCHAR},
-      grade = #{grade,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      mobile = #{mobile,jdbcType=VARCHAR},
-      dept_id = #{deptId,jdbcType=BIGINT},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
-      del_flag = #{delFlag,jdbcType=TINYINT}
+    set
+        <if test="name != null and name != ''">
+          name = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null and name != ''">
+          password = #{password,jdbcType=VARCHAR},
+        </if>
+        <if test="avator != null and avator != ''">
+          avator = #{avator,jdbcType=VARCHAR},
+        </if>
+        <if test="grade != null and avator != ''">
+          grade = #{grade,jdbcType=VARCHAR},
+        </if>
+        <if test="email != null and email != ''">
+          email = #{email,jdbcType=VARCHAR},
+        </if>
+        <if test="mobile != null and email != ''">
+          mobile = #{mobile,jdbcType=VARCHAR},
+        </if>
+        <if test="deptId != null and deptId != ''">
+          dept_id = #{deptId,jdbcType=BIGINT},
+        </if>
+        <if test="createBy != null and createBy != ''">
+          create_by = #{createBy,jdbcType=VARCHAR},
+        </if>
+        <if test="createTime != null ">
+          create_time = #{createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="lastUpdateTime != null ">
+          last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="lastUpdateBy != null and lastUpdateBy != ''">
+          last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+        </if>
+        <if test="delFlag != null and delFlag != ''">
+          del_flag = #{delFlag,jdbcType=TINYINT},
+        </if>
+        id = #{id}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

@@ -47,4 +47,18 @@ public interface CurdService<T> {
      */
     PageResult findPage(PageRequest pageRequest);
 
+    /**
+     * 修改操作
+     * @param record
+     * @return
+     */
+    int update(T record);
+
+    /**
+     * 批量修改操作
+     * @param records
+     * @return
+     */
+    int update(List<T> records);
+
 }

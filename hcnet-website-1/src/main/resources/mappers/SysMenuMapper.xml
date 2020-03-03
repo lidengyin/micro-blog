@@ -3,7 +3,7 @@
 <mapper namespace="cn.hcnet2006.blog.hcnetwebsite.mapper.SysMenuMapper">
   <resultMap id="BaseResultMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="perms" jdbcType="VARCHAR" property="perms" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -22,21 +22,39 @@
       perms, create_by, create_time, 
       last_update_time, last_update_by, del_flag
       )
-    values (#{id,jdbcType=BIGINT}, #{parentId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
       #{perms,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastUpdateTime,jdbcType=TIMESTAMP}, #{lastUpdateBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu">
     update sys_menu
-    set parent_id = #{parentId,jdbcType=VARCHAR},
+    set
+    <if test="parentId != null and parentId != ''">
+      parent_id = #{parentId,jdbcType=BIGINT},
+    </if>
+    <if test="name != null and name != ''">
       name = #{name,jdbcType=VARCHAR},
+    </if>
+    <if test="perms != null and perms != ''">
       perms = #{perms,jdbcType=VARCHAR},
+    </if>
+    <if test="createBy != null and createBy != ''">
       create_by = #{createBy,jdbcType=VARCHAR},
+    </if>
+    <if test="createTime != null">
       create_time = #{createTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="lastUpdateTime != null">
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="lastUpdateBy != null and lastUpdateBy != ''">
       last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
-      del_flag = #{delFlag,jdbcType=TINYINT}
+    </if>
+    <if test="delFlag != null and delFlag != ''">
+      del_flag = #{delFlag,jdbcType=TINYINT},
+    </if>
+    id = #{id}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

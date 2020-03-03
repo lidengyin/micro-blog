@@ -38,4 +38,14 @@ public class SysDeptServiceImpl implements SysDeptService {
     public PageResult findPage(PageRequest pageRequest) {
         return null;
     }
+
+    @Override
+    public int update(SysDept record) {
+        return 0;
+    }
+
+    @Override
+    public int update(List<SysDept> records) {
+        return 0;
+    }
 }

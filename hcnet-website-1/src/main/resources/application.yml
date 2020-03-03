@@ -33,6 +33,11 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 50
       max-pool-prepared-statement-per-connection-size: 20
+      filter:
+        wall:
+          config:
+            multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
+
 #  rabbitmq: #消息中间件
 #    host: 47.97.170.173
 #    port: 5672

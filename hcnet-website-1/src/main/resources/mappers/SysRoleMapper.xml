@@ -25,15 +25,31 @@
       #{lastUpdateBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole">
-    update sys_role
-    set name = #{name,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
-      last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
-      del_flag = #{delFlag,jdbcType=TINYINT}
-    where id = #{id,jdbcType=BIGINT}
+      update sys_role
+        set
+          <if test="name != null and name != ''">
+            name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="remark != null and remark != ''">
+            remark = #{remark,jdbcType=VARCHAR},
+          </if>
+          <if test="createBy != null and createBy != ''">
+            create_by = #{createBy,jdbcType=VARCHAR},
+          </if>
+          <if test="createTime != null">
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="lastUpdateTime != null">
+            last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="lastUpdateBy != null and lastUpdateBy != ''">
+            last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+          </if>
+          <if test="delFlag != null and delFlag != ''">
+            del_flag = #{delFlag,jdbcType=TINYINT},
+          </if>
+            id = #{id}
+            where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, name, remark, create_by, create_time, last_update_time, last_update_by, 

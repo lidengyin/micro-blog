@@ -29,14 +29,32 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysDept">
     update sys_dept
-    set name = #{name,jdbcType=VARCHAR},
+    set
+    <if test="name != null and name != ''">
+      name = #{name,jdbcType=VARCHAR},
+    </if>
+    <if test="deptLogo ！= null and deptLogo != ''">
       dept_logo = #{deptLogo,jdbcType=VARCHAR},
+    </if>
+    <if test="parentId != null and parentId != ''">
       parent_id = #{parentId,jdbcType=BIGINT},
+    </if>
+    <if test="createBy != null and createBy != ''">
       create_by = #{createBy,jdbcType=VARCHAR},
+    </if>
+    <if test="createTime != null">
       create_time = #{createTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="lastUpdateTime != null">
       last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="lastUpdateBy != null and lastUpdateBy != ''">
       last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
-      del_flag = #{delFlag,jdbcType=TINYINT}
+    </if>
+    <if test="delFlag != null and delFlag != ''">
+      del_flag = #{delFlag,jdbcType=TINYINT},
+    </if>
+    id = #{id}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

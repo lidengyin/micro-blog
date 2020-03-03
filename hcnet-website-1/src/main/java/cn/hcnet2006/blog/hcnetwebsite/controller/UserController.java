@@ -5,6 +5,7 @@ import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import io.swagger.annotations.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.ResourceUtils;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 @Api(tags = "用户信息接口")
 @RestController
@@ -73,6 +75,39 @@ public class UserController {
         }catch (IOException e){
             e.printStackTrace();
             return HttpResult.error("注册失败");
+        }
+
+    }
+    @ApiOperation(value = "用户修改",notes = "用户修改")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name="id",value = "用户编号",required = true),
+            @ApiImplicitParam(type = "query", name = "name",value = "用户名"),
+            @ApiImplicitParam(type = "query", name = "password",value = "密码"),
+            @ApiImplicitParam(type = "query", name = "deptId",value = "所属方向ID"),
+            @ApiImplicitParam(type = "query", name = "grade",value = "年级，比如2018"),
+            @ApiImplicitParam(type = "query", name = "email",value = "邮箱，确保格式正确"),
+            @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确"),
+            @ApiImplicitParam(type = "query", name = "lastUpdateBy",value = "修改者"),
+            @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
+            //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
+    })
+    @PostMapping("/update")
+    public HttpResult update(SysUser sysUser, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
+        try{
+            if (uploadFile !=null){
+                String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
+                File folder = new File(url);
+                uploadFile.transferTo(folder);
+                String avator_url = OSSUtils.upload(folder, UUID.randomUUID().toString() +".jpg");
+                folder.delete();
+                sysUser.setAvator(avator_url);
+            }
+            sysUser.setLastUpdateTime(new Date());
+            sysUserService.update(sysUser);
+            return HttpResult.ok(sysUser);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("用户修改失败");
         }
 
     }

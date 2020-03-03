@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.handler.FilteringWebHandler;
 import sun.plugin2.gluegen.runtime.StructAccessor;
 
 import java.io.DataInput;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 @Api(tags = "机构信息接口")
 @RestController
@@ -55,4 +57,31 @@ public class DeptController {
             return HttpResult.error("机构注册失败，请重新注册");
         }
     }
+    @ApiOperation(value = "修改机构信息",notes = "修改机构信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query",name = "id",value = "机构编号",required = true),
+            @ApiImplicitParam(type = "query",name = "name",value = "机构名"),
+            @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构为0"),
+            @ApiImplicitParam(type = "query",name = "lastUpdateBy",value = "修改人"),
+            @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
+    })
+    @PostMapping("/update")
+    public HttpResult update(SysDept sysDept, @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
+        try{
+            if(uploadFile != null){
+                String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
+                File folder = new File(url);
+                String deptLogo = OSSUtils.upload(folder, UUID.randomUUID().toString()+".jpg");
+                folder.delete();
+                sysDept.setDeptLogo(deptLogo);
+            }
+            sysDept.setLastUpdateTime(new Date());
+            sysDeptService.update(sysDept);
+            return HttpResult.ok(sysDept);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("机构修改失败");
+        }
+    }
+
 }

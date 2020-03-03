@@ -37,5 +37,15 @@ public class SysMenuServiceImpl implements SysMenuService {
     public PageResult findPage(PageRequest pageRequest) {
         return null;
     }
+
+    @Override
+    public int update(SysMenu record) {
+        return sysMenuMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public int update(List<SysMenu> records) {
+        return 0;
+    }
 }
 

@@ -6,7 +6,7 @@ import java.util.Date;
 public class SysMenu implements Serializable {
     private Long id;
 
-    private String parentId;
+    private Long parentId;
 
     private String name;
 
@@ -32,11 +32,11 @@ public class SysMenu implements Serializable {
         this.id = id;
     }
 
-    public String getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 

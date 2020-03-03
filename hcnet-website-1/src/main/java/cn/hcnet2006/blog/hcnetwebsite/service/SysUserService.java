@@ -23,4 +23,10 @@ public interface SysUserService extends CurdService<SysUser> {
 
     @Override
     PageResult findPage(PageRequest pageRequest);
+
+    @Override
+    int update(SysUser record);
+
+    @Override
+    int update(List<SysUser> records);
 }

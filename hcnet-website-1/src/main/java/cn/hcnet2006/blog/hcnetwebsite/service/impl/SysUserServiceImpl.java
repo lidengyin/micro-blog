@@ -39,4 +39,14 @@ public class SysUserServiceImpl implements SysUserService {
     public PageResult findPage(PageRequest pageRequest) {
         return null;
     }
+
+    @Override
+    public int update(SysUser record) {
+        return sysUserMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public int update(List<SysUser> records) {
+        return 0;
+    }
 }
