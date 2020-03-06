@@ -109,4 +109,9 @@
     </if>
 
   </select>
+    <select id="findByUsername" parameterType="String" resultMap="BaseResultMap">
+        select
+        id, name, password, avator, grade, email, mobile, dept_id, create_by, create_time, last_update_time, last_update_by, del_flag
+        from sys_user where name = #{username}
+    </select>
 </mapper>

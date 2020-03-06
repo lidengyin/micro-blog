@@ -4,6 +4,13 @@ server:
 spring:
   application:
     name: hcnet-website #应用名
+  cloud:
+    consul: #服务发现
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        enabled: true
   servlet: #上传配置
     multipart:
       enabled: true
@@ -38,22 +45,24 @@ spring:
           config:
             multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
 
+
 #  rabbitmq: #消息中间件
 #    host: 47.97.170.173
 #    port: 5672
 #    username: guest
 #    password: guest
 #    virtual-host: /
-#management: #暴露健康状况
-#  endpoints:
-#    web:
-#      exposure:
-#        include: '*'
-#  endpoint:
-#    health:
-#      show-details: always
+management: #暴露健康状况
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
 mybatis: #Mybaytis映射文件位置
   mapper-locations: classpath:/mappers/*Mapper.xml
 #feign: #开启熔断
-#  hystrix:
-#    enabled: true
+feign:
+  hystrix:
+    enabled: true

@@ -2,18 +2,20 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.jwt.UserLoginDTO;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+import cn.hcnet2006.blog.hcnetwebsite.util.PassWordEncoderUtils;
 import io.swagger.annotations.*;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +34,18 @@ public class UserController {
     private SysUserService sysUserService;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     //private String url = "/usr/local/spring";
+    @ApiOperation(value = "用户登录",notes = "用户登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "name", value = "用户名",required = true),
+            @ApiImplicitParam(type = "query", name = "password", value = "密码",required = true)
+    })
+    @PostMapping("/login")
+    public HttpResult login(String name, String password) throws LoginException {
+        //获取用户信息
+        UserLoginDTO result  =sysUserService.login(name,password);
+        return HttpResult.ok(result);
+    }
+
     @ApiOperation(value = "用户注册",notes = "用户注册" +
             "参数包括：" +
             "1.")
@@ -45,7 +59,8 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "createBy",value = "创建者",required = true),
             //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
     })
-    @PostMapping("/save")
+    @PostMapping("/register")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public HttpResult register(SysUser sysUser, @ApiParam(value = "uploadFile", required = true) MultipartFile uploadFile,
                                HttpServletRequest request) throws FileNotFoundException {
 
@@ -71,6 +86,8 @@ public class UserController {
             sysUser.setLastUpdateBy(sysUser.getCreateBy());
             //删除标志
             sysUser.setDelFlag((byte)0);
+            //密码加密
+            sysUser.setPassword(PassWordEncoderUtils.BCryptPassword(sysUser.getPassword()));
             //保存
             System.out.println("time:"+sdf.format(new Date()));
             sysUserService.save(sysUser);
@@ -133,5 +150,4 @@ public class UserController {
         PageResult pageResult = sysUserService.findPage(pageRequest);
         return HttpResult.ok(pageResult);
     }
-
 }

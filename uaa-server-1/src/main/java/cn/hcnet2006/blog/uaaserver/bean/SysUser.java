@@ -1,18 +1,15 @@
-package cn.hcnet2006.blog.hcnetwebsite.bean;
+package cn.hcnet2006.blog.uaaserver.bean;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
+
 public class SysUser implements Serializable {
-    //@ApiModelProperty(value = "用户编号",hidden = true)
     private Long id;
 
     private String name;
 
     private String password;
-    //@ApiModelProperty(hidden = true)
+
     private String avator;
 
     private String grade;
@@ -24,17 +21,13 @@ public class SysUser implements Serializable {
     private Long deptId;
 
     private String createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    //@ApiModelProperty(hidden = true)
+
     private Date createTime;
-    //@ApiModelProperty(hidden = true)
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+
     private Date lastUpdateTime;
-    //@ApiModelProperty(hidden = true)
+
     private String lastUpdateBy;
-    //@ApiModelProperty(hidden = true)
+
     private Byte delFlag;
 
     private static final long serialVersionUID = 1L;

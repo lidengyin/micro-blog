@@ -1,40 +1,23 @@
-package cn.hcnet2006.blog.hcnetwebsite.bean;
+package cn.hcnet2006.blog.uaaserver.bean;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
-public class SysUser implements Serializable {
-    //@ApiModelProperty(value = "用户编号",hidden = true)
+
+public class SysRole implements Serializable {
     private Long id;
 
     private String name;
 
-    private String password;
-    //@ApiModelProperty(hidden = true)
-    private String avator;
-
-    private String grade;
-
-    private String email;
-
-    private String mobile;
-
-    private Long deptId;
+    private String remark;
 
     private String createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    //@ApiModelProperty(hidden = true)
+
     private Date createTime;
-    //@ApiModelProperty(hidden = true)
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+
     private Date lastUpdateTime;
-    //@ApiModelProperty(hidden = true)
+
     private String lastUpdateBy;
-    //@ApiModelProperty(hidden = true)
+
     private Byte delFlag;
 
     private static final long serialVersionUID = 1L;
@@ -55,52 +38,12 @@ public class SysUser implements Serializable {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAvator() {
-        return avator;
-    }
-
-    public void setAvator(String avator) {
-        this.avator = avator;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public Long getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(Long deptId) {
-        this.deptId = deptId;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getCreateBy() {
@@ -151,12 +94,7 @@ public class SysUser implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", password=").append(password);
-        sb.append(", avator=").append(avator);
-        sb.append(", grade=").append(grade);
-        sb.append(", email=").append(email);
-        sb.append(", mobile=").append(mobile);
-        sb.append(", deptId=").append(deptId);
+        sb.append(", remark=").append(remark);
         sb.append(", createBy=").append(createBy);
         sb.append(", createTime=").append(createTime);
         sb.append(", lastUpdateTime=").append(lastUpdateTime);

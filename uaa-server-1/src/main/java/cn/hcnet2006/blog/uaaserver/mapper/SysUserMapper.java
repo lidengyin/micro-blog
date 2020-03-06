@@ -1,6 +1,6 @@
-package cn.hcnet2006.blog.hcnetwebsite.mapper;
+package cn.hcnet2006.blog.uaaserver.mapper;
 
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
+import cn.hcnet2006.blog.uaaserver.bean.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,8 +12,8 @@ public interface SysUserMapper {
 
     SysUser selectByPrimaryKey(Long id);
 
-    List<SysUser> selectAll(SysUser sysUser);
+    List<SysUser> selectAll();
 
     int updateByPrimaryKey(SysUser record);
-    SysUser findByUsername(String username);
+    SysUser findByUserName(String username);
 }
