@@ -1,8 +1,10 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
-
+@JsonIgnoreProperties(value = {"handler"})
 public class SysUserRole implements Serializable {
     private Long userId;
 

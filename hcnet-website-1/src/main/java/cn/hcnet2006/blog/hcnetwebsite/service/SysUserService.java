@@ -1,6 +1,7 @@
 package cn.hcnet2006.blog.hcnetwebsite.service;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
+import cn.hcnet2006.blog.hcnetwebsite.bean.SysUserRole;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.UserLoginDTO;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
@@ -34,4 +35,8 @@ public interface SysUserService extends CurdService<SysUser> {
     SysUser findByUsername(String username);
 
     UserLoginDTO login(String username, String password);
+
+    int saveUserAndRole(SysUserRole sysUserRole);
+
+    int deleteUserAndRole(Long userId);
 }

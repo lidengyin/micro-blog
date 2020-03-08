@@ -14,9 +14,13 @@ import org.bytedeco.javacpp.freenect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.SchedulingException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import sun.security.acl.PrincipalImpl;
 
 import javax.validation.constraints.Max;
+import java.security.Principal;
 import java.util.*;
 
 @Api(tags = "角色信息接口")
@@ -68,26 +72,32 @@ public class RoleController {
             "            @ApiImplicitParam(type = \"query\", name = \"lastUpdateBy\",value = \"修改者\"),\n" +
             "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
     @ApiImplicitParams({
+//            @ApiImplicitParam(type = "query",name = "menus", value = "菜单编号列表",paramType = "body",dataType = "java.util.List")
     })
+
     @PostMapping("/update/list")
-    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号") List<Long> menus){
+    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号",required = false) List<Long> menus,
+                             Principal principal){
         try{
+            System.out.println("prin:"+principal.getName());
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("auth:"+authentication.getName());
             for(SysRole sysRole: sysRoles){
 
 
                 if(menus != null){
                     int result = sysRoleService.updateRoleAndMenuDelFlag(sysRole.getId());
                     for(Long sysMenu: menus){
+
                         SysRoleMenu sysRoleMenu = new SysRoleMenu();
                         sysRoleMenu.setId(UUID.randomUUID().toString());
-                        sysRoleMenu.setCreateBy(sysRole.getCreateBy());
+                        sysRoleMenu.setCreateBy(principal.getName());
                         sysRoleMenu.setRoleId(sysRole.getId());
                         sysRoleMenu.setMenuId(sysMenu);
                         sysRoleMenu.setCreateTime(new Date());
                         sysRoleMenu.setLastUpdateTime(new Date());
-                        sysRoleMenu.setLastUpdateBy(sysRole.getCreateBy());
+                        sysRoleMenu.setLastUpdateBy(principal.getName());
                         sysRoleMenu.setDelFlag((byte)0);
-                        sysRoleMenu.setCreateBy(sysRoleMenu.getLastUpdateBy());
                         sysRoleService.saveRoleAndMenu(sysRoleMenu);
                     }
                 }else{

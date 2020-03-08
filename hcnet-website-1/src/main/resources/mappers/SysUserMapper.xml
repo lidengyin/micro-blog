@@ -113,7 +113,6 @@
     <if test="delFlag != null">
         and del_flag = #{delFlag}
     </if>
-
   </select>
     <select id="findByUsername" parameterType="String" resultMap="BaseResultMap">
         select

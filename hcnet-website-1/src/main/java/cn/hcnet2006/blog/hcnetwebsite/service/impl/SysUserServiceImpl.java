@@ -1,16 +1,19 @@
 package cn.hcnet2006.blog.hcnetwebsite.service.impl;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
+import cn.hcnet2006.blog.hcnetwebsite.bean.SysUserRole;
 import cn.hcnet2006.blog.hcnetwebsite.exception.UserLoginException;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.JWT;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.UserLoginDTO;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.fegin.AuthServiceClient;
 import cn.hcnet2006.blog.hcnetwebsite.mapper.SysUserMapper;
+import cn.hcnet2006.blog.hcnetwebsite.mapper.SysUserRoleMapper;
 import cn.hcnet2006.blog.hcnetwebsite.pages.MybatisPageHelper;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import cn.hcnet2006.blog.hcnetwebsite.util.PassWordEncoderUtils;
+import com.google.gson.internal.$Gson$Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,8 @@ import java.util.List;
 public class SysUserServiceImpl implements SysUserService {
     @Autowired
     private SysUserMapper sysUserMapper;
-
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
     @Override
     public int save(SysUser record) {
         return sysUserMapper.insert(record);
@@ -81,5 +85,15 @@ public class SysUserServiceImpl implements SysUserService {
         }
         UserLoginDTO userLoginDTO = new UserLoginDTO(jwt, sysUser);
         return userLoginDTO;
+    }
+
+    @Override
+    public int saveUserAndRole(SysUserRole sysUserRole) {
+        return sysUserRoleMapper.insert(sysUserRole);
+    }
+
+    @Override
+    public int deleteUserAndRole(Long userId) {
+        return sysUserRoleMapper.deleteByPrimaryKey(userId);
     }
 }

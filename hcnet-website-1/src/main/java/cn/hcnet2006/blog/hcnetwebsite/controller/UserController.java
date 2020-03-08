@@ -1,6 +1,8 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
+import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
+import cn.hcnet2006.blog.hcnetwebsite.bean.SysUserRole;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.UserLoginDTO;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
@@ -14,6 +16,8 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Api(tags = "用户信息接口")
 @RestController
@@ -51,8 +53,13 @@ public class UserController {
     }
 
     @ApiOperation(value = "用户注册",notes = "用户注册" +
-            "参数包括：" +
-            "1.")
+            "参数包括：        @ApiImplicitParam(type = \"query\", name = \"name\",value = \"用户名\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"password\",value = \"密码\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"deptId\",value = \"所属方向ID\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"grade\",value = \"年级，比如2018\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"email\",value = \"邮箱，确保格式正确\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"mobile\",value = \"手机，确保格式正确\",required = true),\n" +
+            "            @ApiImplicitParam(type = \"query\", name = \"createBy\",value = \"创建者\",required = true),")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query", name = "name",value = "用户名",required = true),
             @ApiImplicitParam(type = "query", name = "password",value = "密码",required = true),
@@ -60,14 +67,14 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "grade",value = "年级，比如2018",required = true),
             @ApiImplicitParam(type = "query", name = "email",value = "邮箱，确保格式正确",required = true),
             @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确",required = true),
-            @ApiImplicitParam(type = "query", name = "createBy",value = "创建者",required = true),
-            //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
     })
     @PostMapping("/register")
     //@PreAuthorize("hasAuthority('ROLE_USER')")
-    public HttpResult register(SysUser sysUser, @ApiParam(value = "uploadFile", required = true) MultipartFile uploadFile,
-                               HttpServletRequest request) throws FileNotFoundException {
+    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
+        //MultipartFile uploadFile = null;
+        SysUser sysUser = new SysUser();
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //新建暂时缓存目录,该目录一定存在
         String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
         System.out.println(url);
@@ -80,6 +87,13 @@ public class UserController {
             //删除服务器缓存文件
             folder.delete();
             //设置属性
+            sysUser.setName(name);
+            sysUser.setPassword(password);
+            sysUser.setDeptId(deptId);
+            sysUser.setEmail(email);
+            sysUser.setMobile(mobile);
+            sysUser.setGrade(grade);
+            sysUser.setCreateBy(authentication.getName());
             //设置用户头像
             sysUser.setAvator(avator_url);
             //设置创建时间
@@ -95,6 +109,18 @@ public class UserController {
             //保存
             System.out.println("time:"+sdf.format(new Date()));
             sysUserService.save(sysUser);
+            for(Long role: roleList){
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUserId(sysUser.getId());
+                sysUserRole.setRoleId(role);
+                sysUserRole.setId(UUID.randomUUID().toString());
+                sysUserRole.setCreateBy(authentication.getName());
+                sysUserRole.setLastUpdateBy(authentication.getName());
+                sysUserRole.setCreateTime(new Date());
+                sysUserRole.setLastUpdateTime(new Date());
+                sysUserRole.setDelFlag((byte)0);
+                sysUserService.saveUserAndRole(sysUserRole);
+            }
             return HttpResult.ok(sysUser);
         }catch (DuplicateKeyException e){
             return HttpResult.error("重复注册");
@@ -118,8 +144,20 @@ public class UserController {
             //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
     })
     @PutMapping("/update")
-    public HttpResult update(SysUser sysUser, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
+    public HttpResult update(Long id, String name, String password, Long deptId, String grade, String email, String mobile,
+                             @RequestParam List<Long> roleList, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
         try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            SysUser sysUser = new SysUser();
+            //设置属性
+            sysUser.setId(id);
+            sysUser.setName(name);
+            sysUser.setPassword(password);
+            sysUser.setDeptId(deptId);
+            sysUser.setEmail(email);
+            sysUser.setMobile(mobile);
+            sysUser.setGrade(grade);
+            sysUser.setCreateBy(authentication.getName());
             if (uploadFile !=null){
                 String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
                 File folder = new File(url);
@@ -130,6 +168,20 @@ public class UserController {
             }
             sysUser.setLastUpdateTime(new Date());
             sysUserService.update(sysUser);
+            sysUserService.deleteUserAndRole(sysUser.getId());
+            System.out.println(sysUser.getId());
+            for(Long role: roleList){
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUserId(sysUser.getId());
+                sysUserRole.setRoleId(role);
+                sysUserRole.setId(UUID.randomUUID().toString());
+                sysUserRole.setCreateBy(authentication.getName());
+                sysUserRole.setLastUpdateBy(authentication.getName());
+                sysUserRole.setCreateTime(new Date());
+                sysUserRole.setLastUpdateTime(new Date());
+                sysUserRole.setDelFlag((byte)0);
+                sysUserService.saveUserAndRole(sysUserRole);
+            }
             return HttpResult.ok(sysUser);
         }catch (Exception e) {
             e.printStackTrace();
