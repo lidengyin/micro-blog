@@ -12,6 +12,12 @@
     <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
   </resultMap>
+  <resultMap id="deptUserMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysDept" extends="BaseResultMap">
+    <collection property="userList"
+                fetchType="lazy"
+                column="{deptId=id}"
+                select="cn.hcnet2006.blog.hcnetwebsite.mapper.SysUserMapper.findByDeptId"/>
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sys_dept
     where id = #{id,jdbcType=BIGINT}
@@ -33,7 +39,7 @@
     <if test="name != null and name != ''">
       name = #{name,jdbcType=VARCHAR},
     </if>
-    <if test="deptLogo ！= null and deptLogo != ''">
+    <if test="deptLogo != null and deptLogo != ''">
       dept_logo = #{deptLogo,jdbcType=VARCHAR},
     </if>
     <if test="parentId != null and parentId != ''">
@@ -57,7 +63,7 @@
     id = #{id}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="deptUserMap">
     select id, name, dept_logo, parent_id, create_by, create_time, last_update_time, 
     last_update_by, del_flag
     from sys_dept

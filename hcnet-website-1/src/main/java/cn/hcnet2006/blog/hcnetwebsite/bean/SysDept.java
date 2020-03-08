@@ -1,11 +1,14 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+@JsonIgnoreProperties(value = {"handler"})
 public class SysDept implements Serializable {
     private Long id;
 
@@ -27,6 +30,7 @@ public class SysDept implements Serializable {
 
     private Byte delFlag;
 
+    private List<SysUser> userList;
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -99,6 +103,14 @@ public class SysDept implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public List<SysUser> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<SysUser> userList) {
+        this.userList = userList;
     }
 
     @Override

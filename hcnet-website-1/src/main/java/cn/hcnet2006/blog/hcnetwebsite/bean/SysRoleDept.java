@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class SysRoleDept implements Serializable {
-    private Long id;
-
     private Long roleId;
 
     private Long deptId;
+
+    private String id;
 
     private String createBy;
 
@@ -21,14 +21,6 @@ public class SysRoleDept implements Serializable {
     private Long delFlag;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getRoleId() {
         return roleId;
@@ -44,6 +36,14 @@ public class SysRoleDept implements Serializable {
 
     public void setDeptId(Long deptId) {
         this.deptId = deptId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCreateBy() {
@@ -92,9 +92,9 @@ public class SysRoleDept implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
         sb.append(", roleId=").append(roleId);
         sb.append(", deptId=").append(deptId);
+        sb.append(", id=").append(id);
         sb.append(", createBy=").append(createBy);
         sb.append(", createTime=").append(createTime);
         sb.append(", lastUpdateTime=").append(lastUpdateTime);

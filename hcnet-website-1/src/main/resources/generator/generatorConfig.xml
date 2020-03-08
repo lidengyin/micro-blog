@@ -57,7 +57,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="cn.hcnet2006.blog.hcnetwebsite.mapper" targetProject="./hcnet-website-1/src/main/java"/>
         <!--数据库表配置-->
 
-        <table tableName="sys_menu">
+        <table tableName="sys_role_dept">
             <!--数据库主键生成策略-->
             <generatedKey column="id" sqlStatement="Mysql"/>
         </table>

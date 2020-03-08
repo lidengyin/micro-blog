@@ -15,5 +15,8 @@ public interface SysUserMapper {
     List<SysUser> selectAll(SysUser sysUser);
 
     int updateByPrimaryKey(SysUser record);
+
     SysUser findByUsername(String username);
+
+    List<SysUser> findByDeptId(Long deptId);
 }

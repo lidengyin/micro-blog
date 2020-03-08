@@ -6,6 +6,7 @@ import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysDeptService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.bytedeco.javacv.FrameFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,5 +112,20 @@ public class DeptController {
             e.printStackTrace();
             return HttpResult.error("查询失败");
         }
+    }
+    @ApiOperation(value = "具体查看某个机构信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "id", value = "机构编号",required = true)
+    })
+    @PostMapping("/find/id")
+    public HttpResult findById(Long id){
+        try{
+            SysDept sysDept = sysDeptService.findById(id);
+            return HttpResult.ok(sysDept);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("查询机构失败");
+        }
+
     }
 }

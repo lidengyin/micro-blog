@@ -11,6 +11,14 @@
     <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
   </resultMap>
+
+  <resultMap id="roleMenuListMapSelect" extends="BaseResultMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole">
+    <collection property="menuList"
+                fetchType="lazy"
+                column="{roleId=id}"
+                select="cn.hcnet2006.blog.hcnetwebsite.mapper.SysMenuMapper.selectByRoleId"
+    />
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sys_role
     where id = #{id,jdbcType=BIGINT}
@@ -51,25 +59,34 @@
             id = #{id}
             where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, name, remark, create_by, create_time, last_update_time, last_update_by, 
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="roleMenuListMapSelect">
+    select id, name, remark, create_by, create_time, last_update_time, last_update_by,
     del_flag
     from sys_role
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysRole" resultMap="BaseResultMap">
-    select id, name, remark, create_by, create_time, last_update_time, last_update_by, 
-    del_flag
-    from sys_role
+    select
+    sr.id, sr.name, sr.remark, sr.create_by, sr.create_time, sr.last_update_time, sr.last_update_by, sr.del_flag
+    from sys_role sr
     where 1=1
     <if test="id != null and id != ''">
-      and id = #{id}
+      and sr.id = #{id}
     </if>
     <if test="name != null and name != ''">
-      and name like concat('%',#{name},'%')
+      and sr.name like concat('%',#{name},'%')
     </if>
     <if test="delFlag != null">
-      and del_flag = #{delFlag}
+      and sr.del_flag = #{delFlag}
     </if>
   </select>
+  <select id="selectUserAndRoleList" resultMap="roleMenuListMapSelect">
+    select
+    sr.id, sr.name, sr.remark, sr.create_by, sr.create_time, sr.last_update_time, sr.last_update_by, sr.del_flag
+    from sys_role sr
+    inner join sys_user_role sur
+    on sr.id = sur.role_id
+    where sur.user_id = #{userId}
+  </select>
+
 </mapper>

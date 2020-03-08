@@ -1,10 +1,13 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+@JsonIgnoreProperties(value = {"handler"})
 public class SysUser implements Serializable {
     //@ApiModelProperty(value = "用户编号",hidden = true)
     private Long id;
@@ -23,6 +26,8 @@ public class SysUser implements Serializable {
 
     private Long deptId;
 
+    private String deptZh;
+
     private String createBy;
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -37,6 +42,7 @@ public class SysUser implements Serializable {
     //@ApiModelProperty(hidden = true)
     private Byte delFlag;
 
+    private List<SysRole> roleList;
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -141,6 +147,22 @@ public class SysUser implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getDeptZh() {
+        return deptZh;
+    }
+
+    public void setDeptZh(String deptZh) {
+        this.deptZh = deptZh;
+    }
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
     }
 
     @Override

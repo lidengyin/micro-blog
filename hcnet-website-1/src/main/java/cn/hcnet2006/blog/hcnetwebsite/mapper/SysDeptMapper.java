@@ -15,4 +15,6 @@ public interface SysDeptMapper {
     List<SysDept> selectAll(SysDept sysDept);
 
     int updateByPrimaryKey(SysDept record);
+
+
 }

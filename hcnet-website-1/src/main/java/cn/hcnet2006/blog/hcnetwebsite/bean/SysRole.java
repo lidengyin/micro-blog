@@ -1,8 +1,11 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.List;
+@JsonIgnoreProperties(value = { "handler" })
 public class SysRole implements Serializable {
     private Long id;
 
@@ -20,6 +23,7 @@ public class SysRole implements Serializable {
 
     private Byte delFlag;
 
+    private List<SysMenu> menuList;
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -84,6 +88,14 @@ public class SysRole implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public List<SysMenu> getMenuList() {
+        return menuList;
+    }
+
+    public void setMenuList(List<SysMenu> menuList) {
+        this.menuList = menuList;
     }
 
     @Override

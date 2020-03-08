@@ -1,8 +1,9 @@
 package cn.hcnet2006.blog.hcnetwebsite.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
-
 public class SysMenu implements Serializable {
     private Long id;
 

@@ -1,4 +1,8 @@
 package cn.hcnet2006.blog.hcnetwebsite.pages;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -6,7 +10,7 @@ import java.util.List;
  * @author Louis
  * @date Jan 12, 2019
  */
-public class PageResult {
+public class PageResult  {
     /**
      * 当前页码
      */

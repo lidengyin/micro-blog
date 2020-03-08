@@ -2,20 +2,21 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
+import cn.hcnet2006.blog.hcnetwebsite.bean.SysRoleMenu;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
 import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysRoleService;
+import com.netflix.hystrix.metric.consumer.HystrixDashboardStream;
+import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.bytedeco.javacpp.freenect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.SchedulingException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.*;
 
 @Api(tags = "角色信息接口")
@@ -32,13 +33,26 @@ public class RoleController {
             @ApiImplicitParam(type = "query", name = "createBy",value = "创建者",required = true),
     })
     @PostMapping("/register")
-    public HttpResult upload(SysRole sysRole){
+    public HttpResult upload(SysRole sysRole, @RequestBody List<Long> menus){
         try{
             sysRole.setCreateTime(new Date());
             sysRole.setLastUpdateTime(new Date());
             sysRole.setLastUpdateBy(sysRole.getCreateBy());
             sysRole.setDelFlag((byte)0);
             sysRoleService.save(sysRole);
+            //初始化设置关联权限
+           for(long sysMenu: menus){
+               SysRoleMenu sysRoleMenu = new SysRoleMenu();
+               sysRoleMenu.setId(UUID.randomUUID().toString());
+               sysRoleMenu.setCreateBy(sysRole.getCreateBy());
+               sysRoleMenu.setRoleId(sysRole.getId());
+               sysRoleMenu.setMenuId(sysMenu);
+               sysRoleMenu.setCreateTime(new Date());
+               sysRoleMenu.setLastUpdateTime(new Date());
+               sysRoleMenu.setLastUpdateBy(sysRole.getCreateBy());
+               sysRoleMenu.setDelFlag((byte)0);
+               sysRoleService.saveRoleAndMenu(sysRoleMenu);
+           }
             return HttpResult.ok(sysRole);
         }catch (DuplicateKeyException e){
             return HttpResult.error("角色注册重复");
@@ -47,7 +61,7 @@ public class RoleController {
             return HttpResult.error("角色注册失败");
         }
     }
-    @ApiOperation(value = "角色列表修改",notes = "角色列表修改:\n" +
+    @ApiOperation(value = "角色列表修改",notes = "角色列表修改，修改角色只能单一修改,切记:\n" +
             " @ApiImplicitParam(type = \"query\", name = \"id\", value = \"编号\",required = true),\n" +
             "            @ApiImplicitParam(type = \"query\",name = \"name\",value = \"角色名\"),\n" +
             "            @ApiImplicitParam(type = \"query\", name = \"remark\",value = \"角色备注\"),\n" +
@@ -56,12 +70,30 @@ public class RoleController {
     @ApiImplicitParams({
     })
     @PostMapping("/update/list")
-    public HttpResult update( @RequestBody List<SysRole> sysRoles){
+    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号") List<Long> menus){
         try{
             for(SysRole sysRole: sysRoles){
 
-                sysRole.setLastUpdateTime(new Date());
-                sysRoleService.update(sysRole);
+
+                if(menus != null){
+                    int result = sysRoleService.updateRoleAndMenuDelFlag(sysRole.getId());
+                    for(Long sysMenu: menus){
+                        SysRoleMenu sysRoleMenu = new SysRoleMenu();
+                        sysRoleMenu.setId(UUID.randomUUID().toString());
+                        sysRoleMenu.setCreateBy(sysRole.getCreateBy());
+                        sysRoleMenu.setRoleId(sysRole.getId());
+                        sysRoleMenu.setMenuId(sysMenu);
+                        sysRoleMenu.setCreateTime(new Date());
+                        sysRoleMenu.setLastUpdateTime(new Date());
+                        sysRoleMenu.setLastUpdateBy(sysRole.getCreateBy());
+                        sysRoleMenu.setDelFlag((byte)0);
+                        sysRoleMenu.setCreateBy(sysRoleMenu.getLastUpdateBy());
+                        sysRoleService.saveRoleAndMenu(sysRoleMenu);
+                    }
+                }else{
+                    sysRole.setLastUpdateTime(new Date());
+                    sysRoleService.update(sysRole);
+                }
             }
             return HttpResult.ok(sysRoles);
         }catch (Exception e){
@@ -69,6 +101,7 @@ public class RoleController {
             return HttpResult.error("角色修改失败");
         }
     }
+
     @ApiOperation(value = "分页查询角色",notes = "分页查询角色\n" +
             "@ApiImplicitParam(type = \"query\", name = \"id\",value = \"编号\",required = true)\n" +
             "            @ApiImplicitParam(type = \"query\",name = \"name\",value = \"角色名\",required = true),\n"+
@@ -90,5 +123,30 @@ public class RoleController {
             e.printStackTrace();
             return HttpResult.error("分页查询失败");
         }
+    }
+    @ApiOperation(value = "具体查询某个角色",notes = "具体查询某个角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "id", value = "编号", required = true)
+    })
+    @PostMapping("/find/id")
+    public HttpResult findById(Long id){
+        try{
+            SysRole sysRole = sysRoleService.findById(id);
+            return HttpResult.ok(sysRole);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("查询菜单失败");
+        }
+    }
+    @ApiOperation(value = "角色关联菜单", notes = "角色关联菜单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "roleId", value = "角色编号",required = true),
+            @ApiImplicitParam(type = "query", name = "menuId", value = "菜单编号",required = true),
+            @ApiImplicitParam(type = "query", name = "createBy", value = "创建者",required = true)
+    })
+    @PostMapping("/register/connect/menu")
+    public HttpResult connectRoleAndUser(SysRoleMenu sysRoleMenu){
+        return HttpResult.ok("hello");
     }
 }

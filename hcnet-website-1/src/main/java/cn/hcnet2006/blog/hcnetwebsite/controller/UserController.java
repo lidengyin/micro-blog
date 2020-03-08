@@ -8,12 +8,16 @@ import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import cn.hcnet2006.blog.hcnetwebsite.util.PassWordEncoderUtils;
+import com.alibaba.fastjson.JSON;
+import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.security.timestamp.HttpTimestamper;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
@@ -142,12 +146,27 @@ public class UserController {
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
     })
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/find/page")
     public HttpResult find(int pageNum, int pageSize, @RequestBody SysUser sysUser){
         Map<String, Object> map = new HashMap<>();
         map.put("sysUser",sysUser);
         PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
         PageResult pageResult = sysUserService.findPage(pageRequest);
-        return HttpResult.ok(pageResult);
+        return HttpResult.ok(JSON.toJSON(pageResult));
+    }
+    @ApiOperation(value = "具体查看某一个用户信息",notes = "具体查看某一个用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "id", value = "用户编号", required = true)
+    })
+    @PostMapping("/find/id")
+    public HttpResult findById(Long id){
+        try{
+            SysUser sysUser = sysUserService.findById(id);
+            return HttpResult.ok(sysUser);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("查询用户失败");
+        }
     }
 }

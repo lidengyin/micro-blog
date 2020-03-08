@@ -44,6 +44,9 @@ spring:
         wall:
           config:
             multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
+#  jackson:
+#    serialization:
+#      FAIL_ON_EMPTY_BEANS: false
 
 
 #  rabbitmq: #消息中间件
@@ -62,7 +65,10 @@ management: #暴露健康状况
       show-details: always
 mybatis: #Mybaytis映射文件位置
   mapper-locations: classpath:/mappers/*Mapper.xml
+  configuration:
+    aggressive-lazy-loading: false #当参数设置为false时，对任意延迟属性的调用都将按需加载
 #feign: #开启熔断
 feign:
   hystrix:
     enabled: true
+

@@ -32,7 +32,7 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public SysDept findById(Long id) {
-        return null;
+        return sysDeptMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public int update(SysDept record) {
-        return 0;
+        return sysDeptMapper.updateByPrimaryKey(record);
     }
 
     @Override

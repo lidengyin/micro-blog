@@ -84,5 +84,13 @@
       and del_flag = #{delFlag}
     </if>
   </select>
+  <select id="selectByRoleId"  resultMap="BaseResultMap">
+    select
+    sm.id, sm.parent_id, sm.name, sm.perms, sm.create_by, sm.del_flag
+from sys_menu sm
+    inner join sys_role_menu srm
+    on sm.id = srm.menu_id
+    where srm.role_id = #{roleId}
+  </select>
 
 </mapper>
