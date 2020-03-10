@@ -25,13 +25,13 @@ public class OSSUtils {
     static String accessKeySecret = "yuYPFquHRK3UHHKq3YlV0MBUaWjLdC";
 
     static String endpoint = "oss-cn-shenzhen.aliyuncs.com";
-    private static OSS ossClient ;
+    //private static OSS ossClient ;
     private  static  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
     public static String upload(File file,String apkName){
-        ossClient =  new OSSClientBuilder().build(endpoint,accessKeyId,
+         OSS ossClient =  new OSSClientBuilder().build(endpoint,accessKeyId,
                 accessKeySecret);
 
-        System.out.println("accessKeyId2:"+accessKeyId);
+        System.out.println("进入OSS工具");
 
         if(file == null){
             return null;

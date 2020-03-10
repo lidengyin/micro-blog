@@ -1,6 +1,5 @@
 package cn.hcnet2006.blog.hcnetwebsite.config;
 
-import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +28,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         resources.resourceId("/**").tokenStore(tokenStore);
     }
 
+
     /**
      * URL访问控制
      * @param http
@@ -48,7 +48,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 首页和登录页面
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
+
                 .antMatchers("/upload.html").permitAll()
+                .antMatchers("/templates/index.html").permitAll()
                 // swagger
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
@@ -61,7 +63,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/register").permitAll()
+
+                .antMatchers("/imgUpload").permitAll()
+                .antMatchers("/videoUpload").permitAll()
+                .antMatchers("/ueditor").permitAll()
+                .antMatchers("/content").permitAll()
                 // 其他所有请求需要身份认证
                 .anyRequest().authenticated();
+        http.headers().frameOptions().disable();
     }
+
 }

@@ -15,8 +15,8 @@ spring:
     multipart:
       enabled: true
       file-size-threshold: 0
-      max-file-size: 10000000
-      max-request-size: 10000000
+      max-file-size: 1000MB
+      max-request-size: 1000MB
       resolve-lazily: false
   datasource: #数据库配置
     name: druidDataSource
@@ -44,6 +44,10 @@ spring:
         wall:
           config:
             multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
+#  mvc: #直接定义过滤规则与静态资源位置
+#    static-path-pattern: /static/**
+#  resources:
+#    static-locations: classpath:/static/
 #  jackson:
 #    serialization:
 #      FAIL_ON_EMPTY_BEANS: false
@@ -71,4 +75,3 @@ mybatis: #Mybaytis映射文件位置
 feign:
   hystrix:
     enabled: true
-
