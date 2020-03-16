@@ -1,33 +1,28 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu;
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
-import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
-import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
-import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysMenuService;
-import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+import cn.hcnet2006.core.http.HttpResult;
+import cn.hcnet2006.core.page.PageRequest;
+import cn.hcnet2006.core.page.PageResult;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 @Api(tags = "菜单信息接口")
 @RestController
 @RequestMapping("/menu")
-public class MenuController {
+
+public class MenuController  {
     @Autowired
-    private SysMenuService sysMenuService;
+    SysMenuService sysMenuService;
     @ApiOperation(value = "菜单注册",notes = "菜单注册")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query", name = "name",value = "菜单名",required = true),
@@ -89,7 +84,7 @@ public class MenuController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
     })
     @PostMapping("/find/page")
-    public HttpResult find(int pageNum, int pageSize, @RequestBody  SysMenu sysMenu){
+    public HttpResult find(int pageNum, int pageSize, @RequestBody SysMenu sysMenu){
         try{
             Map<String, Object> map = new HashMap<>();
             map.put("sysMenu",sysMenu);
@@ -101,4 +96,9 @@ public class MenuController {
             return HttpResult.error("菜单查询失败");
         }
     }
+
+//    @Override
+//    public cn.hcnet2006.core.http.HttpResult find(int pageNum, int pageSize, cn.hcnet2006.admin.bean.SysMenu sysMenu) {
+//        return super.find(pageNum, pageSize, sysMenu);
+//    }
 }

@@ -66,6 +66,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
                 .antMatchers("/imgUpload").permitAll()
                 .antMatchers("/videoUpload").permitAll()
+                .antMatchers("/fileUpload").permitAll()
                 .antMatchers("/ueditor").permitAll()
                 .antMatchers("/content").permitAll()
                 // 其他所有请求需要身份认证

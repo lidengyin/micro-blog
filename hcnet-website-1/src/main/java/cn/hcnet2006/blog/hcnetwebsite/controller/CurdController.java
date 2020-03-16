@@ -1,7 +1,7 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
-import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
-import org.apache.tomcat.util.http.parser.HttpParser;
+
+import cn.hcnet2006.core.http.HttpResult;
 
 public interface CurdController {
     public HttpResult findAll();

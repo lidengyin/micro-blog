@@ -1,0 +1,39 @@
+spring:
+  servlet: #上传配置
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+      resolve-lazily: false
+  datasource: #数据库配置
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql:///hc_official_website_1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      filters: stat, wall, config
+      initial-size: 1
+      max-active: 100
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 50
+      max-pool-prepared-statement-per-connection-size: 20
+      filter:
+        wall:
+          config:
+            multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
+mybatis: #Mybaytis映射文件位置
+  mapper-locations: classpath:/mappers/*Mapper.xml
+  configuration:
+    aggressive-lazy-loading: false #当参数设置为false时，对任意延迟属性的调用都将按需加载
+

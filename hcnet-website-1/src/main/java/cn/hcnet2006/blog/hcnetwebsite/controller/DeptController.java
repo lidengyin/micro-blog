@@ -1,33 +1,30 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
-import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
-import cn.hcnet2006.blog.hcnetwebsite.pages.PageRequest;
-import cn.hcnet2006.blog.hcnetwebsite.pages.PageResult;
+
+import cn.hcnet2006.common.util.OSSUtils;
+import cn.hcnet2006.core.http.HttpResult;
+import cn.hcnet2006.core.page.PageRequest;
+import cn.hcnet2006.core.page.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysDeptService;
-import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+
 import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.bytedeco.javacv.FrameFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.handler.FilteringWebHandler;
-import sun.plugin2.gluegen.runtime.StructAccessor;
-
-import java.io.DataInput;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Api(tags = "机构信息接口")
 @RestController
@@ -38,21 +35,25 @@ public class DeptController {
     @ApiOperation(value = "上传机构信息",notes = "上传机构信息")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query",name = "name",value = "机构名",required = true),
-            @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构为0",required = true),
-            @ApiImplicitParam(type = "query",name = "createBy",value = "创建人",required = true)
-
+            @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构父ID为-1",required = true),
     })
     @PostMapping("/register")
-    public HttpResult upload(SysDept sysDept, @ApiParam("uploadFile")MultipartFile uploadFile) throws FileNotFoundException {
+    public HttpResult upload(String name, Long parentId, @ApiParam("uploadFile")MultipartFile uploadFile) throws FileNotFoundException {
         String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
         File folder = new File(url);
         try{
+            SysDept sysDept = new SysDept();
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             uploadFile.transferTo(folder);
-            String logo_url = OSSUtils.upload(folder, sysDept.getName()+".jpg");
+            String logo_url = OSSUtils.upload(folder, UUID.randomUUID().toString()+".jpg");
+            sysDept.setParentId(parentId);
+            sysDept.setName(name);
+            sysDept.setCreateBy(authentication.getName());
             sysDept.setDeptLogo(logo_url);
             sysDept.setCreateTime(new Date());
             sysDept.setLastUpdateTime(new Date());
-            sysDept.setLastUpdateBy(sysDept.getCreateBy());
+            sysDept.setLastUpdateBy(authentication.getName());
             sysDept.setDelFlag((byte)0);
             sysDeptService.save(sysDept);
             return HttpResult.ok(sysDept);
@@ -67,13 +68,18 @@ public class DeptController {
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query",name = "id",value = "机构编号",required = true),
             @ApiImplicitParam(type = "query",name = "name",value = "机构名"),
-            @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构为0"),
-            @ApiImplicitParam(type = "query",name = "lastUpdateBy",value = "修改人"),
+            @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构父ID为-1"),
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
     })
     @PostMapping("/update")
-    public HttpResult update(SysDept sysDept, @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
+    public HttpResult update(String name, Long id, Long parentId, Byte delFlag , @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
         try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            SysDept sysDept = new SysDept();
+            sysDept.setName(name);
+            sysDept.setId(id);
+            sysDept.setParentId(parentId);
+            sysDept.setDelFlag(delFlag);
             if(uploadFile != null){
                 String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
                 File folder = new File(url);
@@ -82,6 +88,7 @@ public class DeptController {
                 sysDept.setDeptLogo(deptLogo);
             }
             sysDept.setLastUpdateTime(new Date());
+            sysDept.setLastUpdateBy(authentication.getName());
             sysDeptService.update(sysDept);
             return HttpResult.ok(sysDept);
         }catch (Exception e){
@@ -127,5 +134,48 @@ public class DeptController {
             return HttpResult.error("查询机构失败");
         }
 
+    }
+    @ApiOperation(value = "查询机构树",notes = "查询机构树")
+    @ApiImplicitParams({
+            @ApiImplicitParam(type = "query", name = "parentId", value = "规定根目录的父ID为-1，",required = true)
+
+    })
+    @PostMapping("/find/tree")
+    public HttpResult findDeptNodes(Long parentId){
+        try{
+            System.out.println("parentId:"+parentId);
+            List<SysDept> sysDepts = sysDeptService.findByParentId(parentId);
+            //SysDept sysDept = sysDeptService.findById(id);
+            List<SysDept> rootList = sysDeptService.findRootTree();
+            for(SysDept sysDept: sysDepts){
+                List<SysDept> depts = getChildNodes(sysDept.getParentId(), rootList);
+                sysDept.setDeptList(depts);
+            }
+            return HttpResult.ok(sysDepts);
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResult.error("查询失败");
+        }
+    }
+
+    private List<SysDept> getChildNodes(Long id, List<SysDept> rootList){
+        //新建字节点列表
+        List<SysDept> chileList = new ArrayList<>();
+        //根据父节点ID填充对应的字节点
+        for(SysDept sysDept : rootList){
+            if(sysDept.getParentId() != null){
+                if(sysDept.getParentId() == id){
+                    chileList.add(sysDept);
+                }
+            }
+        }
+        if(chileList.size() == 0){
+            return null;
+        }
+        //便利子节点并且进行对应的填充
+        for(SysDept sysDept: chileList){
+            sysDept.setDeptList(getChildNodes(sysDept.getId(), rootList));
+        }
+        return chileList;
     }
 }

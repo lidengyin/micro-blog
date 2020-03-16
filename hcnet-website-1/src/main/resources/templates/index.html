@@ -71,12 +71,19 @@
     var ue = UE.getEditor('editor');
     UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
     UE.Editor.prototype.getActionUrl = function(action) {
+        //如果是上传图片
         if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadimage') {
             return 'http://localhost:8211/imgUpload';
             //'http://localhost:8080/imgUpload';为方法imgUpload的访问地址
+        //上传视频
         }else if(action == "uploadvideo"){
             return 'http://localhost:8211/videoUpload';
         }
+        //上传附件
+        else if(action == "uploadfile"){
+            return 'http://localhost:8211/fileUpload';
+        }
+        //默认
         else {
             return this._bkGetActionUrl.call(this, action);
         }

@@ -45,7 +45,10 @@ spring:
           config:
             multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
 #  mvc: #直接定义过滤规则与静态资源位置
-#    static-path-pattern: /static/**
+#    static-path-patterncontroller
+              #bean
+            #mapper
+            #service: /static/**
 #  resources:
 #    static-locations: classpath:/static/
 #  jackson:

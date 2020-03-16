@@ -24,6 +24,18 @@
     </properties>
     <!--本Model依赖-->
     <dependencies>
+        <!--hc-admin-->
+        <dependency>
+            <groupId>cn.hcnet2006.admin</groupId>
+            <artifactId>hc-admin</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!--hc-core-->
+        <dependency>
+            <groupId>cn.hcnet2006.core</groupId>
+            <artifactId>hc-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!--Ueditor依赖的jar包-->
         <dependency>
             <groupId>org.json</groupId>

@@ -39,6 +39,10 @@
         <module>micro-consumer</module>
         <module>hcnet-website</module>
         <module>hcnet-website-1</module>
+        <module>hc-admin</module>
+        <module>hc-common</module>
+        <module>hc-core</module>
+        <module>hc-dao</module>
     </modules>
     <!--公共依赖-->
     <dependencies>
