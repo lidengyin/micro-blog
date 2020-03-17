@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hcnet2006.blog.hcnetwebsite.mapper.SysTypeArticleMapper">
+  <resultMap id="BaseResultMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysTypeArticle">
+    <id column="article_id" jdbcType="BIGINT" property="articleId" />
+    <id column="type_id" jdbcType="BIGINT" property="typeId" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from sys_type_article
+    where article_id = #{articleId,jdbcType=BIGINT}
+
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysTypeArticle">
+
+    insert into sys_type_article (article_id, type_id, id, 
+      create_by, create_time, last_update_by, 
+      last_update_time, del_flag)
+    values (#{articleId,jdbcType=BIGINT}, #{typeId,jdbcType=BIGINT}, #{id,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateBy,jdbcType=VARCHAR}, 
+      #{lastUpdateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysTypeArticle">
+    update sys_type_article
+    set id = #{id,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=TINYINT}
+    where article_id = #{articleId,jdbcType=BIGINT}
+      and type_id = #{typeId,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select article_id, type_id, id, create_by, create_time, last_update_by, last_update_time, 
+    del_flag
+    from sys_type_article
+    where article_id = #{articleId,jdbcType=BIGINT}
+      and type_id = #{typeId,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select article_id, type_id, id, create_by, create_time, last_update_by, last_update_time, 
+    del_flag
+    from sys_type_article
+  </select>
+</mapper>

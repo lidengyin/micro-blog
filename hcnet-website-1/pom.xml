@@ -13,7 +13,7 @@
     <artifactId>hcnet-website-1</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>hcnet-website</name>
+    <name>hcnet-website-12</name>
     <!--打包方式-->
     <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>
@@ -21,21 +21,10 @@
     <properties>
         <spring-boot-admin.version>2.2.2</spring-boot-admin.version>
         <thymeleaf-layout-dialect.version>2.1.0</thymeleaf-layout-dialect.version>
+        <docker.image.prefix>47.97.170.173:5000</docker.image.prefix>
     </properties>
     <!--本Model依赖-->
     <dependencies>
-        <!--hc-admin-->
-        <dependency>
-            <groupId>cn.hcnet2006.admin</groupId>
-            <artifactId>hc-admin</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <!--hc-core-->
-        <dependency>
-            <groupId>cn.hcnet2006.core</groupId>
-            <artifactId>hc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
         <!--Ueditor依赖的jar包-->
         <dependency>
             <groupId>org.json</groupId>
@@ -93,7 +82,7 @@
         <!--添加MyBatis依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot</artifactId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
         <!--添加MyBatis生成器-->
@@ -130,12 +119,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
         </dependency>
-<!--        &lt;!&ndash;集成配置&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-config</artifactId>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash;集成服务熔断&ndash;&gt;-->
+        <!--集成配置-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <!--集成服务熔断-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
@@ -145,22 +134,22 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-<!--        &lt;!&ndash;集成服务监控&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>de.codecentric</groupId>-->
-<!--            <artifactId>spring-boot-admin-starter-client</artifactId>-->
-<!--            <version>${spring-boot-admin.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash;集成链路追踪&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-zipkin</artifactId>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash;集成消息总线&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-bus-amqp</artifactId>-->
-<!--        </dependency>-->
+        <!--集成服务监控-->
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring-boot-admin.version}</version>
+        </dependency>
+        <!--集成链路追踪-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
+        <!--集成消息总线-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
         <!--使用GOOGLE ZING生成二维码-->
         <dependency>
             <groupId>com.google.zxing</groupId>
@@ -202,6 +191,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.62</version>
         </dependency>
+        <!--APK解析-->
+        <dependency>
+            <groupId>net.dongliu</groupId>
+            <artifactId>apk-parser</artifactId>
+            <version>2.6.10</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -209,6 +204,52 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!--防止jks密钥文件被编译，导致乱码-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>cert</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!--使用Maven和Dockerfile命令构建镜像-->
+            <plugin>
+
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.3.6</version>
+                <configuration>
+                    <!--生成镜像名称-->
+                    <repository>
+                        ${docker.image.prefix}/${project.name}
+                    </repository>
+                    <!--生成镜像版本-->
+                    <tag>${project.version}</tag>
+                    <!--推送到私有仓库或者DockerHub时需要开启用户认证-->
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <buildArgs>
+                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+                <!--直接使用 mvn install 命令打包项目， 就会自动构建并推送镜像-->
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

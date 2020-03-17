@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,13 +46,12 @@ public class UploadController {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
     @ApiOperation(value = "文件上传",notes = "文件上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(type = "query",name = "createBy",dataType = "String",required = true)
     })
     //@PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/apk")
-    public HttpResult upload(@ApiParam(value = "uploadFile",required = true) MultipartFile uploadFile,String createBy, HttpServletRequest req) throws NullPointerException, IOException {
-
-
+    public HttpResult upload(@ApiParam(value = "uploadFile",required = true) MultipartFile uploadFile) throws NullPointerException, IOException {
+        //授权对象
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //获取文件大小
         String apkSize = uploadFile.getSize()+"";
         //应用类型
@@ -104,9 +105,9 @@ public class UploadController {
             sysApk.setApkPk(pkName);
             sysApk.setApkVc(vCode);
             sysApk.setApkVn(vName);
-            sysApk.setCreateBy(createBy);
+            sysApk.setCreateBy(authentication.getName());
             sysApk.setCreateTime(new Date());
-            sysApk.setLastUpdateBy(createBy);
+            sysApk.setLastUpdateBy(authentication.getName());
             sysApk.setLastUpdateTime(new Date());
             sysApk.setApkSize(apkSize);
             //sysApk.setApkUrl(filePath);

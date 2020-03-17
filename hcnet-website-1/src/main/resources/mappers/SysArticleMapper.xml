@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hcnet2006.blog.hcnetwebsite.mapper.SysArticleMapper">
+  <resultMap id="BaseResultMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="article_name" jdbcType="VARCHAR" property="articleName" />
+    <result column="article_img_url" jdbcType="VARCHAR" property="articleImgUrl" />
+    <result column="article_intro_url" jdbcType="VARCHAR" property="articleIntroUrl" />
+    <result column="article_content_url" jdbcType="VARCHAR" property="articleContentUrl" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+  </resultMap>
+    <resultMap id="articleAndUserAndTypeAndDeptMap" type="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle" extends="BaseResultMap">
+        <collection property="userList"
+                    fetchType="lazy"
+                    column="{articleId=id}"
+                    select="cn.hcnet2006.blog.hcnetwebsite.mapper.SysUserMapper.selectByArticleId"/>
+        <collection property="typeList"
+                    fetchType="lazy"
+                    column="{typeId=id}"
+                    select="cn.hcnet2006.blog.hcnetwebsite.mapper.SysTypeMapper.selectTypeByArticleId"
+                    />
+        <collection property="deptList"
+                    column="id"
+                    fetchType="lazy"
+                    select="cn.hcnet2006.blog.hcnetwebsite.mapper.SysDeptMapper.selectDeptByArticleId"/>
+    </resultMap>
+  <delete id="deleteByPrimaryKey"  parameterType="java.lang.Long">
+    delete from sys_article
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle">
+    insert into sys_article ( article_name, article_img_url,
+      article_intro_url, article_content_url, create_by, 
+      create_time, last_update_by, last_update_time, 
+      del_flag)
+    values ( #{articleName,jdbcType=VARCHAR}, #{articleImgUrl,jdbcType=VARCHAR},
+      #{articleIntroUrl,jdbcType=VARCHAR}, #{articleContentUrl,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateBy,jdbcType=VARCHAR}, #{lastUpdateTime,jdbcType=TIMESTAMP}, 
+      #{delFlag,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle">
+    update sys_article
+    set
+        <if test="id != null and id != ''">
+          id = #{id},
+        </if>
+        <if test="articleName != null and articleName != ''">
+          article_name = #{articleName,jdbcType=VARCHAR},
+        </if>
+        <if test="articleImgUrl != null and articleImgUrl != ''">
+          article_img_url = #{articleImgUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="articleIntroUrl != null and articleIntroUrl != ''">
+          article_intro_url = #{articleIntroUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="articleContentUrl != null and articleContentUrl != ''">
+          article_content_url = #{articleContentUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="createBy != null and createBy != ''">
+          create_by = #{createBy,jdbcType=VARCHAR},
+        </if>
+        <if test="createTime != null">
+          create_time = #{createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="lastUpdateBy != null and lastUpdateBy != ''">
+          last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+        </if>
+        <if test="lastUpdateTime != null ">
+          last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="delFlag != null">
+          del_flag = #{delFlag,jdbcType=TINYINT}
+        </if>
+
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="articleAndUserAndTypeAndDeptMap">
+    select id, article_name, article_img_url, article_intro_url, article_content_url, 
+    create_by, create_time, last_update_by, last_update_time, del_flag
+    from sys_article
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle" resultMap="BaseResultMap">
+    select sa.id, sa.article_name, sa.article_img_url, sa.article_intro_url, sa.article_content_url, sa.create_by, sa.create_time, sa.last_update_by, sa.last_update_time, sa.del_flag
+    from sys_article sa
+
+    <if test=" deptId != null and deptId != ''">
+        inner join sys_dept_article sda
+        on    sda.dept_id = #{deptId} and sa.id = sda.article_id
+    </if>
+    <if test=" typeId != null and typeId != ''">
+        inner join sys_type_article sta
+        on  sta.type_id = #{typeId} and sa.id = sta.article_id
+    </if>
+    <if test="userId != null and userId != ''">
+        inner join sys_user_article sua
+        on  sua.user_id = #{userId} and sua.article_id = sa.id
+    </if>
+    where 1 = 1
+    <if test="id != null and id != ''">
+        and sa.id = #{id}
+    </if>
+    <if test="articleName != null and articleName != ''">
+        and sa.article_name LIKE  CONCAT('%',#{articleName},'%')
+    </if>
+    <if test="delFlag != null">
+        and sa.del_flag = #{delFlag}
+    </if>
+  </select>
+</mapper>

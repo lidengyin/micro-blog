@@ -1,17 +1,15 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUser;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysUserRole;
 import cn.hcnet2006.blog.hcnetwebsite.jwt.UserLoginDTO;
-import cn.hcnet2006.common.util.OSSUtils;
-import cn.hcnet2006.common.util.PassWordEncoderUtils;
-import cn.hcnet2006.core.http.HttpResult;
-import cn.hcnet2006.core.page.PageRequest;
-import cn.hcnet2006.core.page.PageResult;
+import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+import cn.hcnet2006.blog.hcnetwebsite.util.PassWordEncoderUtils;
+import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysUserService;
 import com.alibaba.fastjson.JSON;
-import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,14 +19,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.security.timestamp.HttpTimestamper;
 
 import javax.security.auth.login.LoginException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

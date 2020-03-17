@@ -2,10 +2,9 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysType;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysTypeService;
-import cn.hcnet2006.core.http.HttpResult;
-import cn.hcnet2006.core.page.PageRequest;
-import cn.hcnet2006.core.page.PageResult;
-import com.netflix.ribbon.proxy.annotation.Http;
+import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -55,9 +54,6 @@ public class TypeController {
             "            @ApiImplicitParam(type = \"query\", name = \"name\",required = false,value=类型名),\n" +
             "            @ApiImplicitParam(type = \"query\", name = \"delFlag\", required = false，value=删除标志)")
     @ApiImplicitParams({
-//            @ApiImplicitParam(type = "query",name = "id", required = true),
-//            @ApiImplicitParam(type = "query", name = "name",required = false),
-//            @ApiImplicitParam(type = "query", name = "delFlag", required = false)
     })
     @PutMapping("/update")
     public HttpResult update(@RequestBody List<SysType> sysTypes){

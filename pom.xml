@@ -27,22 +27,18 @@
     </properties>
     <!--子Model工程-->
     <modules>
-        <module>config-server</module>
-        <module>user-service</module>
-        <module>monitoring-server</module>
-        <module>uaa-server</module>
-        <module>uaa-server-1</module>
-        <module>gateway-server</module>
-        <module>admin-server</module>
-        <module>log-server</module>
-        <module>upload-apk</module>
-        <module>micro-consumer</module>
-        <module>hcnet-website</module>
+<!--        <module>config-server</module>-->
+<!--        <module>user-service</module>-->
+<!--        <module>monitoring-server</module>-->
+<!--        <module>uaa-server</module>-->
+<!--        <module>uaa-server-1</module>-->
+<!--        <module>gateway-server</module>-->
+<!--        <module>admin-server</module>-->
+<!--        <module>log-server</module>-->
+<!--        <module>upload-apk</module>-->
+<!--        <module>micro-consumer</module>-->
+<!--        <module>hcnet-website</module>-->
         <module>hcnet-website-1</module>
-        <module>hc-admin</module>
-        <module>hc-common</module>
-        <module>hc-core</module>
-        <module>hc-dao</module>
     </modules>
     <!--公共依赖-->
     <dependencies>

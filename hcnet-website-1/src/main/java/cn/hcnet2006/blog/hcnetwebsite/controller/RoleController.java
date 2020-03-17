@@ -1,25 +1,18 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysMenu;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRole;
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysRoleMenu;
-import cn.hcnet2006.core.http.HttpResult;
-import cn.hcnet2006.core.page.PageRequest;
-import cn.hcnet2006.core.page.PageResult;
+import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysRoleService;
-import com.netflix.hystrix.metric.consumer.HystrixDashboardStream;
-import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
-import org.bytedeco.javacpp.freenect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.scheduling.SchedulingException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import sun.security.acl.PrincipalImpl;
 
-import javax.validation.constraints.Max;
 import java.security.Principal;
 import java.util.*;
 

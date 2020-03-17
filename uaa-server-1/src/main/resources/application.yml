@@ -5,17 +5,17 @@ spring:
     name: uaa-server #服务名
   cloud:
     consul: #服务发现
-      host: localhost
+      host: 172.17.0.1
       port: 8500
       discovery:
         service-name: ${spring.application.name}
-        health-check-url: http://localhost:8212/actuator/health
-        hostname: localhost
+        health-check-url: http://172.17.0.1:8212/actuator/health
+        hostname: 172.17.0.1
   datasource: #数据源
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql:///hc_official_website_1?useUnicode=true&characterEncoding=UTF8&serverTime=Asia/Shanghai
+      url: jdbc:mysql://172.17.0.1:3306/hc_official_website_1?useUnicode=true&characterEncoding=UTF8&serverTime=Asia/Shanghai
       filters: stat, wall, config
       initial-size: 1
       max-active: 100
@@ -33,6 +33,15 @@ spring:
       username: root
       password: 123456
     name: druidDataSource
+  zipkin:
+    base-url: http://172.17.0.1:9411/
+  sleuth:
+    sampler:
+      probability: 1
+  boot:
+    admin:
+      client:
+        url: "http://172.17.0.1:8205"
 mybatis: #MyBatis持久层框架
   mapper-locations: classpath:/mappers/*Mapper.xml
 management: #健康监控暴露

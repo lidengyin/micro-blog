@@ -2,15 +2,13 @@ package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
 
-import cn.hcnet2006.common.util.OSSUtils;
-import cn.hcnet2006.core.http.HttpResult;
-import cn.hcnet2006.core.page.PageRequest;
-import cn.hcnet2006.core.page.PageResult;
+import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
+import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
+import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
 import cn.hcnet2006.blog.hcnetwebsite.service.SysDeptService;
 
-import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.*;
-import org.bytedeco.javacv.FrameFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;

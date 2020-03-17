@@ -1,31 +1,33 @@
-
 server:
-  port: 8211 #应用端口
+  port: 8211
 spring:
   application:
-    name: hcnet-website #应用名
-  cloud:
-    consul: #服务发现
-      host: 127.0.0.1
-      port: 8500
-      discovery:
-        service-name: ${spring.application.name}
-        enabled: true
-  servlet: #上传配置
+    name: hcnet-website-1
+  #  cloud:
+  #    consul:
+  #      host: localhost
+  #      port: 8500
+  #      discovery:
+  #        service-name: ${spring.application.name}
+  servlet:
     multipart:
       enabled: true
       file-size-threshold: 0
-      max-file-size: 1000MB
-      max-request-size: 1000MB
+      max-file-size: 100000000
+      max-request-size: 100000000
       resolve-lazily: false
-  datasource: #数据库配置
+  boot:
+    admin:
+      client:
+        url: "http://172.17.0.1:8205"
+        instance:
+          service-base-url: "http://172.17.0.1:8205"
+  datasource:
     name: druidDataSource
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
-      username: root
-      password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql:///hc_official_website_1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://172.17.0.1:3306/hc_official_website_1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       filters: stat, wall, config
       initial-size: 1
       max-active: 100
@@ -40,41 +42,25 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 50
       max-pool-prepared-statement-per-connection-size: 20
-      filter:
-        wall:
-          config:
-            multi-statement-allow: true #允许一次批量更新操作，会导致SQL注入
-#  mvc: #直接定义过滤规则与静态资源位置
-#    static-path-patterncontroller
-              #bean
-            #mapper
-            #service: /static/**
-#  resources:
-#    static-locations: classpath:/static/
-#  jackson:
-#    serialization:
-#      FAIL_ON_EMPTY_BEANS: false
-
-
-#  rabbitmq: #消息中间件
-#    host: 47.97.170.173
-#    port: 5672
-#    username: guest
-#    password: guest
-#    virtual-host: /
-management: #暴露健康状况
+      username: root
+      password: 123456
+  rabbitmq:
+    username: guest
+    password: guest
+    port: 5672
+    publisher-confirms: true
+    virtual-host: /
+    host: 172.17.0.1
+management:
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
         include: '*'
-  endpoint:
-    health:
-      show-details: always
-mybatis: #Mybaytis映射文件位置
+mybatis:
   mapper-locations: classpath:/mappers/*Mapper.xml
-  configuration:
-    aggressive-lazy-loading: false #当参数设置为false时，对任意延迟属性的调用都将按需加载
-#feign: #开启熔断
 feign:
   hystrix:
     enabled: true

@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: hcnet-website-1
+  cloud:
+    config:
+      discovery:
+        service-id: config-server #配置中心
+        enabled: true #开启发现服务
+      name: user-server
+      profile: pro #对应{profiles}部分
+      label: master
+    consul:
+      host: 172.17.0.1
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8211/actuator/health
+  zipkin:
+    base-url: http://172.17.0.1:9411/
+    sleuth:
+      sampler:
+        probability: 1
+
+feign:
+  hystrix:
+    enabled: true

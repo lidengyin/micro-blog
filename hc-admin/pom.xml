@@ -18,12 +18,6 @@
     </properties>
 
     <dependencies>
-        <!--集成hc-dao-->
-        <dependency>
-            <groupId>cn.hcnet2006.dao</groupId>
-            <artifactId>hc-dao</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
         <!--集成hc-core-->
         <dependency>
             <groupId>cn.hcnet2006.core</groupId>
@@ -44,7 +38,7 @@
         <!--添加MyBatis依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot</artifactId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
         <!--添加MyBatis生成器-->
