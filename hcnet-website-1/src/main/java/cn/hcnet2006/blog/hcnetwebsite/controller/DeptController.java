@@ -102,12 +102,21 @@ public class DeptController {
             "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
-            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true)
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
+            @ApiImplicitParam(paramType = "query",name = "id", value = "机构编号", required = true),
+            @ApiImplicitParam(paramType = "query",name = "name", value = "机构名称", required = false),
+            @ApiImplicitParam(paramType = "query",name = "parentId", value = "父机构ID，顶级机构父ID为－１", required = false),
+            @ApiImplicitParam(paramType = "query",name = "delFlag", value = "删除标志，－１删除状态，０正常", required = false),
 
     })
     @PostMapping("/find/page")
-    public HttpResult find(int pageNum, int pageSize, @RequestBody SysDept sysDept){
+    public HttpResult find(int pageNum, int pageSize, Long id,String name,Long parentId,  Byte delFlag){
         try{
+            SysDept sysDept = new SysDept();
+            sysDept.setId(id);
+            sysDept.setName(name);
+            sysDept.setParentId(parentId);
+            sysDept.setDelFlag(delFlag);
             Map<String, Object> map = new HashMap<>();
             map.put("sysDept",sysDept);
             PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);

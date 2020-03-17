@@ -36,9 +36,10 @@ public class QrCodeController {
         try{
             SysApk sysApk = sysApkService.findById(id);
             stream = response.getOutputStream();
+            //String imgUrl = "./";
             //produce the QRCode
             QRCodeUtil.encode(sysApk.getApkUrl(),
-                    "/home/lidengyin/IdeaProjects/Blog-Micro/upload-apk/src/main/resources/th.jpeg",sysApk.getApkName(),stream,true);
+                    "/usr/local/hc_logo.png",sysApk.getApkName(),stream,true);
         }catch (Exception e){
             e.printStackTrace();
         }finally {

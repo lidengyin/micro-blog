@@ -27,7 +27,7 @@ public class ArticleController {
     @ApiImplicitParams({
     })
     @PostMapping("/register")
-    public HttpResult upload(String articleName, String articleImgUrl, String articleContentUrl, String articleIntroUrl, @RequestParam  List<Long> depts, @RequestParam  List<Long> users, @RequestParam  List<Long> types){
+    public HttpResult upload(@ApiParam(value = "文章名") String articleName, @ApiParam(value = "封面截图链接") String articleImgUrl, String articleContentUrl, String articleIntroUrl, @RequestParam  List<Long> depts, @RequestParam  List<Long> users, @RequestParam  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();
@@ -97,12 +97,12 @@ public class ArticleController {
             return HttpResult.error("文章注册失败");
         }
     }
-    @ApiOperation(value = "文章修改操作",notes = "文章修改操作")
+    @ApiOperation(value = "文章修改操作",notes = "文章修改操作，修改操作依旧是组合操作")
     @ApiImplicitParams({
     })
     @PutMapping("/update")
-    public HttpResult update(Byte delFlag, Long id,  String articleName, String articleImgUrl, String articleContentUrl,
-                             String articleIntroUrl, @RequestParam(required = false)  List<Long> depts, @RequestParam(required = false)  List<Long> users, @RequestParam(required = false)  List<Long> types){
+    public HttpResult update(@ApiParam(value = "删除标志，－１已经删除，０正常",required = false) Byte delFlag,@ApiParam("文章ID") Long id,  @ApiParam(value = "文章名",required = false) String articleName, @ApiParam(value = "封面图片URL",required = false) String articleImgUrl, @ApiParam("文章内容URL") String articleContentUrl,
+                             @ApiParam(value = "封面简介URL") String articleIntroUrl, @RequestParam(value = "机构列表",required = false)  List<Long> depts, @RequestParam(value = "成员列表",required = false)  List<Long> users, @RequestParam(value = "文章类型列表",required = false)  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();
