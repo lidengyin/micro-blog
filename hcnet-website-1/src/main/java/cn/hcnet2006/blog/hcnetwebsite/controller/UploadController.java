@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Api(tags = "上传信息接口")
+@Api(tags = "APK安装包上传接口")
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
@@ -34,8 +34,9 @@ public class UploadController {
     @ApiImplicitParams({
             //@ApiImplicitParam(type = "query",name = "createBy",dataType = "String",required = true)
     })
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/apk")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult upload(@ApiParam(value = "uploadFile",required = true) MultipartFile uploadFile) throws NullPointerException, FileNotFoundException {
 
         try{
@@ -62,6 +63,7 @@ public class UploadController {
             //版本号
             long vCode = (long) apkInfo.get("vCode");
             url = OSSUtils.upload(folder, UUID.randomUUID().toString()+".apk");
+            folder.delete();
             //设置SysApk
             SysApk sysApk = new SysApk();
             sysApk.setApkName(apkName);
@@ -83,42 +85,19 @@ public class UploadController {
         }
         return HttpResult.error("上传失败");
     }
-
     @ApiOperation(value = "根据删除标志，分页查看上传文件",notes = "根据删除标志，分页查看上传文件")
     @ApiImplicitParams({
-//            @ApiImplicitParam(type = "query", name = "pageNum", value = "页码",required = true),
-//            @ApiImplicitParam(type = "query", name = "pageSize", value = "行数",required = true),
-//            @ApiImplicitParam(type = "query",name = "delFlag", value = "删除标志，-1为删除，0为正常",required = true)
+            @ApiImplicitParam(type = "query", name = "pageNum", value = "页码",required = true),
+            @ApiImplicitParam(type = "query", name = "pageSize", value = "行数",required = true),
+            @ApiImplicitParam(type = "query",name = "delFlag", value = "删除标志，-1为删除，0为正常",required = true)
     })
     @PostMapping("/select/delFlag")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    @CrossOrigin(maxAge = 3600, origins = "*", allowedHeaders = "*",allowCredentials = "true")
-    public HttpResult selectByDelFlag(@RequestBody PageRequest pageRequest){
-        Byte delFlag = Byte.parseByte( pageRequest.getParam("delFlag")+"") ;
-        Map<String ,Object> map = new HashMap<>();
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult selectByDelFlag(int pageNum, int pageSize, Byte delFlag){
+        Map<String, Object> map = new HashMap<>();
         map.put("delFlag", delFlag);
-        pageRequest.setParams(map);
-        System.out.println(pageRequest.getParam("delFlag"));
+        PageRequest pageRequest = new PageRequest(pageNum,pageSize,map);
         PageResult pageResult = sysApkService.findPage(pageRequest);
         return HttpResult.ok(pageResult);
     }
-
-//    @ApiOperation(value = "修改可用性",notes = "修改可用性")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(type = "query",name = "id",value = "ID",required = true),
-//            @ApiImplicitParam(type = "query",name = "delFlag",value = "删除标志，-1删除，0正常",required = true)
-//    })
-//    @PostMapping("/update/id")
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    public HttpResult updateDelFlagById(String id, String delFlag){
-//        try{
-//            SysApk sysApk = new SysApk();
-//            sysApk.setId(Long.parseLong(id));
-//            sysApk.setDelFlag(Byte.parseByte(delFlag));
-//            int result = sysApkService.delete(sysApk);
-//            return HttpResult.ok(sysApk);
-//        }catch (Exception e){
-//            return HttpResult.error("修改失败");
-//        }
-//    }
 }

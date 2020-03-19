@@ -30,8 +30,8 @@ management:
 zuul:
   sensitive-headers: #敏感头部，设置为空，防止截获Authorization
   host:
-    connect-timeout-millis: 20000
-    socket-timeout-millis: 20000
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000
 
 #遵循默认路由规则：http://ZUUL_HOST:ZUUL_PORT/微服务注册中心serviceId/**
 

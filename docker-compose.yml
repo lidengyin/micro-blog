@@ -1,7 +1,7 @@
 version: '3'
 services:
   micro-gateway-server:
-    image: 172.16.199.25:5000/gateway-server:0.0.1-SNAPSHOT
+    image: 172.18.0.1:5000/gateway-server:0.0.1-SNAPSHOT
     restart: on-failure
     ports:
     - 8204:8204

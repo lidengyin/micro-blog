@@ -27,14 +27,19 @@ public class RoleController {
 
             @ApiImplicitParam(type = "query",name = "name",value = "角色名",required = true),
             @ApiImplicitParam(type = "query", name = "remark",value = "角色备注",required = true),
-            @ApiImplicitParam(type = "query", name = "createBy",value = "创建者",required = true),
     })
     @PostMapping("/register")
-    public HttpResult upload(SysRole sysRole, @RequestBody List<Long> menus){
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult upload(String name, String remark, @RequestBody List<Long> menus){
         try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            SysRole sysRole = new SysRole();
+            sysRole.setName(name);
+            sysRole.setRemark(remark);
             sysRole.setCreateTime(new Date());
             sysRole.setLastUpdateTime(new Date());
-            sysRole.setLastUpdateBy(sysRole.getCreateBy());
+            sysRole.setLastUpdateBy(authentication.getName());
+            sysRole.setLastUpdateBy(authentication.getName());
             sysRole.setDelFlag((byte)0);
             sysRoleService.save(sysRole);
             //初始化设置关联权限
@@ -58,42 +63,58 @@ public class RoleController {
             return HttpResult.error("角色注册失败");
         }
     }
-    @ApiOperation(value = "角色列表修改",notes = "角色列表修改，修改角色只能单一修改,切记:\n" +
+    @ApiOperation(value = "角色列表修改",notes = "角色列表修改，修改角色关联属性，那么这个角色只能单一修改,切记:\n" +
             " @ApiImplicitParam(type = \"query\", name = \"id\", value = \"编号\",required = true),\n" +
             "            @ApiImplicitParam(type = \"query\",name = \"name\",value = \"角色名\"),\n" +
             "            @ApiImplicitParam(type = \"query\", name = \"remark\",value = \"角色备注\"),\n" +
             "            @ApiImplicitParam(type = \"query\", name = \"lastUpdateBy\",value = \"修改者\"),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
+            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")" +
+            "实例" +
+            "[\n" +
+            "  {\n" +
+            "    \"delFlag\": 0,\n" +
+            "    \"id\": 0,\n" +
+            "    \"name\": \"string\",\n" +
+            "    \"remark\": \"string\"\n" +
+            "  }，\n" +
+            "  {\n" +
+            "    \"delFlag\": 0,\n" +
+            "    \"id\": １,\n" +
+            "    \"name\": \"stng\",\n" +
+            "    \"remark\": \"string\"\n" +
+            "  }\n" +
+            "]")
     @ApiImplicitParams({
 //            @ApiImplicitParam(type = "query",name = "menus", value = "菜单编号列表",paramType = "body",dataType = "java.util.List")
     })
 
-    @PostMapping("/update/list")
-    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号",required = false) List<Long> menus,
-                             Principal principal){
+    @PutMapping("/update/list")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号",required = false) List<Long> menus){
         try{
-            System.out.println("prin:"+principal.getName());
+
+
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             System.out.println("auth:"+authentication.getName());
             for(SysRole sysRole: sysRoles){
-
-
                 if(menus != null){
                     int result = sysRoleService.updateRoleAndMenuDelFlag(sysRole.getId());
                     for(Long sysMenu: menus){
 
                         SysRoleMenu sysRoleMenu = new SysRoleMenu();
                         sysRoleMenu.setId(UUID.randomUUID().toString());
-                        sysRoleMenu.setCreateBy(principal.getName());
+                        sysRoleMenu.setCreateBy(authentication.getName());
                         sysRoleMenu.setRoleId(sysRole.getId());
                         sysRoleMenu.setMenuId(sysMenu);
                         sysRoleMenu.setCreateTime(new Date());
                         sysRoleMenu.setLastUpdateTime(new Date());
-                        sysRoleMenu.setLastUpdateBy(principal.getName());
+                        sysRoleMenu.setLastUpdateBy(authentication.getName());
                         sysRoleMenu.setDelFlag((byte)0);
                         sysRoleService.saveRoleAndMenu(sysRoleMenu);
                     }
                 }else{
+                    sysRole.setLastUpdateBy(authentication.getName());
                     sysRole.setLastUpdateTime(new Date());
                     sysRoleService.update(sysRole);
                 }
@@ -113,10 +134,16 @@ public class RoleController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
+            @ApiImplicitParam(type = "query",name = "name",value = "角色名"),
+            @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，－１时删除，０时正常"),
     })
     @PostMapping("/find/page")
-    public HttpResult find(int pageNum, int pageSize, @RequestBody SysRole sysRole){
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult find(int pageNum, int pageSize, String name, Byte delFlag){
         try{
+            SysRole sysRole = new SysRole();
+            sysRole.setName(name);
+            sysRole.setDelFlag(delFlag);
             Map<String, Object> map = new HashMap<>();
             map.put("sysRole", sysRole);
             PageRequest pageRequest  = new PageRequest(pageNum, pageSize, map);
@@ -132,6 +159,7 @@ public class RoleController {
             @ApiImplicitParam(type = "query", name = "id", value = "编号", required = true)
     })
     @PostMapping("/find/id")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findById(Long id){
         try{
             SysRole sysRole = sysRoleService.findById(id);
@@ -141,15 +169,5 @@ public class RoleController {
             e.printStackTrace();
             return HttpResult.error("查询菜单失败");
         }
-    }
-    @ApiOperation(value = "角色关联菜单", notes = "角色关联菜单")
-    @ApiImplicitParams({
-            @ApiImplicitParam(type = "query", name = "roleId", value = "角色编号",required = true),
-            @ApiImplicitParam(type = "query", name = "menuId", value = "菜单编号",required = true),
-            @ApiImplicitParam(type = "query", name = "createBy", value = "创建者",required = true)
-    })
-    @PostMapping("/register/connect/menu")
-    public HttpResult connectRoleAndUser(SysRoleMenu sysRoleMenu){
-        return HttpResult.ok("hello");
     }
 }

@@ -27,7 +27,9 @@ public class ArticleController {
     @ApiImplicitParams({
     })
     @PostMapping("/register")
-    public HttpResult upload(@ApiParam(value = "文章名") String articleName, @ApiParam(value = "封面截图链接") String articleImgUrl, String articleContentUrl, String articleIntroUrl, @RequestParam  List<Long> depts, @RequestParam  List<Long> users, @RequestParam  List<Long> types){
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult upload( @RequestParam(value = "文章名",required = false) String articleName, @RequestParam(value = "封面图片URL",required = false) String articleImgUrl, @RequestParam(value = "文章内容URL") String articleContentUrl,
+                             @RequestParam(value = "封面简介URL",required = false) String articleIntroUrl, @RequestParam(value = "机构ID列表",required = false)  List<Long> depts, @RequestParam(value = "成员ID列表",required = false)  List<Long> users, @RequestParam(value = "文章类型ID列表",required = false)  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();
@@ -101,12 +103,15 @@ public class ArticleController {
     @ApiImplicitParams({
     })
     @PutMapping("/update")
-    public HttpResult update(@ApiParam(value = "删除标志，－１已经删除，０正常",required = false) Byte delFlag,@ApiParam("文章ID") Long id,  @ApiParam(value = "文章名",required = false) String articleName, @ApiParam(value = "封面图片URL",required = false) String articleImgUrl, @ApiParam("文章内容URL") String articleContentUrl,
-                             @ApiParam(value = "封面简介URL") String articleIntroUrl, @RequestParam(value = "机构列表",required = false)  List<Long> depts, @RequestParam(value = "成员列表",required = false)  List<Long> users, @RequestParam(value = "文章类型列表",required = false)  List<Long> types){
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult update(@RequestParam(value = "删除标志，－１已经删除，０正常",required = false) Byte delFlag,@RequestParam(value = "文章ID") Long id,  @RequestParam(value = "文章名",required = false) String articleName, @RequestParam(value = "封面图片URL",required = false) String articleImgUrl, @RequestParam(value = "文章内容URL") String articleContentUrl,
+                             @RequestParam(value = "封面简介URL",required = false) String articleIntroUrl, @RequestParam(value = "机构ID列表",required = false)  List<Long> depts, @RequestParam(value = "成员ID列表",required = false)  List<Long> users, @RequestParam(value = "文章类型ID列表",required = false)  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();
             sysArticle.setId(id);
+            System.out.println("id:"+id);
+            System.out.println("name:"+articleName);
             sysArticle.setArticleName(articleName);
             sysArticle.setArticleContentUrl(articleContentUrl);
             sysArticle.setArticleImgUrl(articleImgUrl);
@@ -176,6 +181,7 @@ public class ArticleController {
             @ApiImplicitParam(type = "query", name = "id", value = "文章编号", required = false)
     })
     @PostMapping("/find/id")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findId(Long id){
         try{
             SysArticle sysArticle = sysArticleService.findById(id);
@@ -198,6 +204,7 @@ public class ArticleController {
             @ApiImplicitParam(type = "query", name = "typeId",value = "类型编号",required = false),
     })
     @PostMapping("/find/list")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findByPage(int pageNum,int pageSize, Long id,
      String name,  Long typeId,  Long userId,
      Long deptId, Byte delFlag){

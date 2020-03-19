@@ -19,16 +19,13 @@
     delete from sys_apk
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysApk">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into sys_apk (id, apk_name, apk_pk, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysApk">
+    insert into sys_apk ( apk_name, apk_pk,
       apk_vn, create_by, create_time, 
       last_update_by, last_update_time, apk_vc, 
       del_flag, apk_url, apk_size
       )
-    values (#{id,jdbcType=BIGINT}, #{apkName,jdbcType=VARCHAR}, #{apkPk,jdbcType=VARCHAR}, 
+    values ( #{apkName,jdbcType=VARCHAR}, #{apkPk,jdbcType=VARCHAR},
       #{apkVn,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastUpdateBy,jdbcType=VARCHAR}, #{lastUpdateTime,jdbcType=TIMESTAMP}, #{apkVc,jdbcType=BIGINT}, 
       #{delFlag,jdbcType=TINYINT}, #{apkUrl,jdbcType=VARCHAR}, #{apkSize,jdbcType=VARCHAR}

@@ -1,7 +1,6 @@
 package cn.hcnet2006.blog.hcnetwebsite.controller;
 
 import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
-
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
 import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
@@ -14,10 +13,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +32,8 @@ public class DeptController {
             @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构父ID为-1",required = true),
     })
     @PostMapping("/register")
-    public HttpResult upload(String name, Long parentId, @ApiParam("uploadFile")MultipartFile uploadFile) throws FileNotFoundException {
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult upload(String name, Long parentId, @ApiParam(value = "uploadFile",required = true)MultipartFile uploadFile) throws FileNotFoundException {
         String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
         File folder = new File(url);
         try{
@@ -69,7 +66,8 @@ public class DeptController {
             @ApiImplicitParam(type = "query",name = "parentId",value = "上级机构ID，一级机构父ID为-1"),
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
     })
-    @PostMapping("/update")
+    @PutMapping("/update")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult update(String name, Long id, Long parentId, Byte delFlag , @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,13 +101,14 @@ public class DeptController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
-            @ApiImplicitParam(paramType = "query",name = "id", value = "机构编号", required = true),
+            @ApiImplicitParam(paramType = "query",name = "id", value = "机构编号"),
             @ApiImplicitParam(paramType = "query",name = "name", value = "机构名称", required = false),
             @ApiImplicitParam(paramType = "query",name = "parentId", value = "父机构ID，顶级机构父ID为－１", required = false),
             @ApiImplicitParam(paramType = "query",name = "delFlag", value = "删除标志，－１删除状态，０正常", required = false),
 
     })
     @PostMapping("/find/page")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult find(int pageNum, int pageSize, Long id,String name,Long parentId,  Byte delFlag){
         try{
             SysDept sysDept = new SysDept();
@@ -132,6 +131,7 @@ public class DeptController {
             @ApiImplicitParam(type = "query", name = "id", value = "机构编号",required = true)
     })
     @PostMapping("/find/id")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findById(Long id){
         try{
             SysDept sysDept = sysDeptService.findById(id);
@@ -148,6 +148,7 @@ public class DeptController {
 
     })
     @PostMapping("/find/tree")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findDeptNodes(Long parentId){
         try{
             System.out.println("parentId:"+parentId);

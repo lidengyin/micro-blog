@@ -32,13 +32,13 @@
 <!--        <module>monitoring-server</module>-->
 <!--        <module>uaa-server</module>-->
 <!--        <module>uaa-server-1</module>-->
-<!--        <module>gateway-server</module>-->
+        <module>gateway-server</module>
 <!--        <module>admin-server</module>-->
 <!--        <module>log-server</module>-->
 <!--        <module>upload-apk</module>-->
 <!--        <module>micro-consumer</module>-->
 <!--        <module>hcnet-website</module>-->
-        <module>hcnet-website-1</module>
+<!--        <module>hcnet-website-1</module>-->
     </modules>
     <!--公共依赖-->
     <dependencies>

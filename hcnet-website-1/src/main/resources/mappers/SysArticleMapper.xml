@@ -76,7 +76,11 @@
           del_flag = #{delFlag,jdbcType=TINYINT}
         </if>
 
-    where id = #{id,jdbcType=BIGINT}
+    where
+        <if test="id != null and id != ''">
+           id = #{id,jdbcType=BIGINT}
+        </if>
+
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="articleAndUserAndTypeAndDeptMap">
     select id, article_name, article_img_url, article_intro_url, article_content_url, 

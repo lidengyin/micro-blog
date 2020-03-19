@@ -41,20 +41,15 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "password", value = "密码",required = true)
     })
     @PostMapping("/login")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult login(String name, String password) throws LoginException {
         //获取用户信息
         UserLoginDTO result  =sysUserService.login(name,password);
         return HttpResult.ok(result);
     }
 
-    @ApiOperation(value = "用户注册",notes = "用户注册" +
-            "参数包括：        @ApiImplicitParam(type = \"query\", name = \"name\",value = \"用户名\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"password\",value = \"密码\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"deptId\",value = \"所属方向ID\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"grade\",value = \"年级，比如2018\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"email\",value = \"邮箱，确保格式正确\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"mobile\",value = \"手机，确保格式正确\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"createBy\",value = \"创建者\",required = true),")
+    @ApiOperation(value = "用户注册",notes = "用户注册")
+
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query", name = "name",value = "用户名",required = true),
             @ApiImplicitParam(type = "query", name = "password",value = "密码",required = true),
@@ -64,8 +59,8 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确",required = true),
     })
     @PostMapping("/register")
-    //@PreAuthorize("hasAuthority('ROLE_USER')")
-    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam(value = "角色ID列表") List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
         //MultipartFile uploadFile = null;
         SysUser sysUser = new SysUser();
 
@@ -125,7 +120,7 @@ public class UserController {
         }
 
     }
-    @ApiOperation(value = "用户修改",notes = "用户修改")
+    @ApiOperation(value = "用户修改",notes = "用户修改,这里必须说的是，roleList用户角色ID列表的修改，每次都是删除以前的，然后加上新增的")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query", name="id",value = "用户编号",required = true),
             @ApiImplicitParam(type = "query", name = "name",value = "用户名"),
@@ -136,11 +131,11 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确"),
             @ApiImplicitParam(type = "query", name = "lastUpdateBy",value = "修改者"),
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
-            //@ApiImplicitParam(type = "query", name = "createTime",value = "创建时间",required = true)
     })
     @PutMapping("/update")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult update(Long id, String name, String password, Long deptId, String grade, String email, String mobile,
-                             @RequestParam List<Long> roleList, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
+                             @RequestParam(value = "角色ID列表",required = false) List<Long> roleList, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysUser sysUser = new SysUser();
@@ -165,17 +160,20 @@ public class UserController {
             sysUserService.update(sysUser);
             sysUserService.deleteUserAndRole(sysUser.getId());
             System.out.println(sysUser.getId());
-            for(Long role: roleList){
-                SysUserRole sysUserRole = new SysUserRole();
-                sysUserRole.setUserId(sysUser.getId());
-                sysUserRole.setRoleId(role);
-                sysUserRole.setId(UUID.randomUUID().toString());
-                sysUserRole.setCreateBy(authentication.getName());
-                sysUserRole.setLastUpdateBy(authentication.getName());
-                sysUserRole.setCreateTime(new Date());
-                sysUserRole.setLastUpdateTime(new Date());
-                sysUserRole.setDelFlag((byte)0);
-                sysUserService.saveUserAndRole(sysUserRole);
+            if(roleList != null){
+                sysUserService.deleteUserAndRole(sysUser.getId());
+                for(Long role: roleList){
+                    SysUserRole sysUserRole = new SysUserRole();
+                    sysUserRole.setUserId(sysUser.getId());
+                    sysUserRole.setRoleId(role);
+                    sysUserRole.setId(UUID.randomUUID().toString());
+                    sysUserRole.setCreateBy(authentication.getName());
+                    sysUserRole.setLastUpdateBy(authentication.getName());
+                    sysUserRole.setCreateTime(new Date());
+                    sysUserRole.setLastUpdateTime(new Date());
+                    sysUserRole.setDelFlag((byte)0);
+                    sysUserService.saveUserAndRole(sysUserRole);
+                }
             }
             return HttpResult.ok(sysUser);
         }catch (Exception e) {
@@ -183,19 +181,26 @@ public class UserController {
             return HttpResult.error("用户修改失败");
         }
     }
-    @ApiOperation(value = "分页查看用户列表",notes = "分页查看用户列表:可选参数列表，以and的形式，随机组合，不加参数就是全选\n" +
-            "@ApiImplicitParam(type = \"query\", name=\"id\",value = \"用户编号\",required = true),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"name\",value = \"用户名\"),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"deptId\",value = \"所属方向ID\"),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"grade\",value = \"年级，比如2018\"),\n" +
-            "            @ApiImplicitParam(type = \"query\", name = \"delFlag\",value = \"删除标志，-1删除，0正常\")")
+    @ApiOperation(value = "分页查看用户列表",notes = "分页查看用户列表:可选参数列表，以and的形式，随机组合，不加参数就是全选")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "当前页码",required = true),
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页行数",required = true),
+            @ApiImplicitParam(type = "query", name="id",value = "用户编号"),
+            @ApiImplicitParam(type = "query", name = "name",value = "用户名"),
+            @ApiImplicitParam(type = "query", name = "deptId",value = "所属方向ID"),
+            @ApiImplicitParam(type = "query", name = "grade",value = "年级，比如2018"),
+            @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
     })
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+   // @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/find/page")
-    public HttpResult find(int pageNum, int pageSize, @RequestBody SysUser sysUser){
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult find(int pageNum, int pageSize, Long id, String name, String grade, Long deptId, Byte delFlag){
+        SysUser sysUser = new SysUser();
+        sysUser.setId(id);
+        sysUser.setGrade(grade);
+        sysUser.setName(name);
+        sysUser.setDeptId(deptId);
+        sysUser.setDelFlag(delFlag);
         Map<String, Object> map = new HashMap<>();
         map.put("sysUser",sysUser);
         PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
@@ -207,6 +212,7 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "id", value = "用户编号", required = true)
     })
     @PostMapping("/find/id")
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findById(Long id){
         try{
             SysUser sysUser = sysUserService.findById(id);
