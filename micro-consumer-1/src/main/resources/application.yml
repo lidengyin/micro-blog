@@ -1,0 +1,12 @@
+server.port=8213
+spring:
+application:
+name: micro-consumer
+cloud:
+consul:
+host: 172.17.0.1
+port: 8500
+discovery:
+service-name: ${spring.application.name}
+hostname: 172.17.0.1
+health-check-url: http://172.17.0.1:8209/actuator/health
