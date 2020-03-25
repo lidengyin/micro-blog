@@ -64,3 +64,17 @@ mybatis:
 feign:
   hystrix:
     enabled: true
+  httpclient:
+    enabled: true
+#解决Feign请求超时问题
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 180000 #三分钟
+ribbon:
+  ReadTimeOut: 180000
+  SocketTimeOut: 180000

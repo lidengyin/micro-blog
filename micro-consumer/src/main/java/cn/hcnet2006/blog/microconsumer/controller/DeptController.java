@@ -1,28 +1,17 @@
-package cn.hcnet2006.blog.hcnetwebsite.controller;
+package cn.hcnet2006.blog.microconsumer.controller;
 
-import cn.hcnet2006.blog.hcnetwebsite.bean.SysDept;
-import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
-import cn.hcnet2006.blog.hcnetwebsite.http.HttpResult;
-import cn.hcnet2006.blog.hcnetwebsite.page.PageRequest;
-import cn.hcnet2006.blog.hcnetwebsite.page.PageResult;
-import cn.hcnet2006.blog.hcnetwebsite.service.SysDeptService;
-
+import cn.hcnet2006.blog.microconsumer.http.HttpResult;
+import cn.hcnet2006.blog.microconsumer.service.SysDeptService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
+
 
 @Api(tags = "机构信息接口")
 @RestController
-@RequestMapping("/dept")
+@RequestMapping("/feign/dept")
 public class DeptController {
     @Autowired
     private SysDeptService sysDeptService;
@@ -34,30 +23,7 @@ public class DeptController {
     @PostMapping("/register")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult upload(String name, Long parentId, @ApiParam(value = "uploadFile",required = true)MultipartFile uploadFile) throws FileNotFoundException {
-        String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
-        File folder = new File(url);
-        try{
-            SysDept sysDept = new SysDept();
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            uploadFile.transferTo(folder);
-            String logo_url = OSSUtils.upload(folder, UUID.randomUUID().toString()+".jpg");
-            sysDept.setParentId(parentId);
-            sysDept.setName(name);
-            sysDept.setCreateBy(authentication.getName());
-            sysDept.setDeptLogo(logo_url);
-            sysDept.setCreateTime(new Date());
-            sysDept.setLastUpdateTime(new Date());
-            sysDept.setLastUpdateBy(authentication.getName());
-            sysDept.setDelFlag((byte)0);
-            sysDeptService.save(sysDept);
-            return HttpResult.ok(sysDept);
-        }catch (DuplicateKeyException | IOException e){
-            return HttpResult.error("该机构注册");
-        }catch (Exception e){
-            e.printStackTrace();
-            return HttpResult.error("机构注册失败，请重新注册");
-        }
+       return sysDeptService.upload(name,parentId,uploadFile);
     }
     @ApiOperation(value = "修改机构信息",notes = "修改机构信息")
     @ApiImplicitParams({
@@ -69,28 +35,7 @@ public class DeptController {
     @PutMapping("/update")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult update(String name, Long id, Long parentId, Byte delFlag , @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
-        try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            SysDept sysDept = new SysDept();
-            sysDept.setName(name);
-            sysDept.setId(id);
-            sysDept.setParentId(parentId);
-            sysDept.setDelFlag(delFlag);
-            if(uploadFile != null){
-                String url = ResourceUtils.getURL("").getPath()+uploadFile.getOriginalFilename();
-                File folder = new File(url);
-                String deptLogo = OSSUtils.upload(folder, UUID.randomUUID().toString()+".jpg");
-                folder.delete();
-                sysDept.setDeptLogo(deptLogo);
-            }
-            sysDept.setLastUpdateTime(new Date());
-            sysDept.setLastUpdateBy(authentication.getName());
-            sysDeptService.update(sysDept);
-            return HttpResult.ok(sysDept);
-        }catch (Exception e){
-            e.printStackTrace();
-            return HttpResult.error("机构修改失败");
-        }
+        return sysDeptService.update(name,id,parentId,delFlag,uploadFile);
     }
     @ApiOperation(value = "分页查询机构信息",notes = "分页显示机构信息\n" +
             "可选参数进行and组合，全部为空则为查询全部\n" +
@@ -110,21 +55,7 @@ public class DeptController {
     @PostMapping("/find/page")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult find(int pageNum, int pageSize, Long id,String name,Long parentId,  Byte delFlag){
-        try{
-            SysDept sysDept = new SysDept();
-            sysDept.setId(id);
-            sysDept.setName(name);
-            sysDept.setParentId(parentId);
-            sysDept.setDelFlag(delFlag);
-            Map<String, Object> map = new HashMap<>();
-            map.put("sysDept",sysDept);
-            PageRequest pageRequest = new PageRequest(pageNum, pageSize, map);
-            PageResult pageResult = sysDeptService.findPage(pageRequest);
-            return HttpResult.ok(pageResult);
-        }catch (Exception e){
-            e.printStackTrace();
-            return HttpResult.error("查询失败");
-        }
+        return sysDeptService.find(pageNum, pageSize, id, name, parentId, delFlag);
     }
     @ApiOperation(value = "具体查看某个机构信息")
     @ApiImplicitParams({
@@ -133,14 +64,7 @@ public class DeptController {
     @PostMapping("/find/id")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findById(Long id){
-        try{
-            SysDept sysDept = sysDeptService.findById(id);
-            return HttpResult.ok(sysDept);
-        }catch (Exception e){
-            e.printStackTrace();
-            return HttpResult.error("查询机构失败");
-        }
-
+        return sysDeptService.findById(id);
     }
     @ApiOperation(value = "查询机构树",notes = "查询机构树")
     @ApiImplicitParams({
@@ -150,40 +74,7 @@ public class DeptController {
     @PostMapping("/find/tree")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult findDeptNodes(Long parentId){
-        try{
-            System.out.println("parentId:"+parentId);
-            List<SysDept> sysDepts = sysDeptService.findByParentId(parentId);
-            //SysDept sysDept = sysDeptService.findById(id);
-            List<SysDept> rootList = sysDeptService.findRootTree();
-            for(SysDept sysDept: sysDepts){
-                List<SysDept> depts = getChildNodes(sysDept.getParentId(), rootList);
-                sysDept.setDeptList(depts);
-            }
-            return HttpResult.ok(sysDepts);
-        }catch (Exception e){
-            e.printStackTrace();
-            return HttpResult.error("查询失败");
-        }
+        return sysDeptService.findDeptNodes(parentId);
     }
 
-    private List<SysDept> getChildNodes(Long id, List<SysDept> rootList){
-        //新建字节点列表
-        List<SysDept> chileList = new ArrayList<>();
-        //根据父节点ID填充对应的字节点
-        for(SysDept sysDept : rootList){
-            if(sysDept.getParentId() != null){
-                if(sysDept.getParentId() == id){
-                    chileList.add(sysDept);
-                }
-            }
-        }
-        if(chileList.size() == 0){
-            return null;
-        }
-        //便利子节点并且进行对应的填充
-        for(SysDept sysDept: chileList){
-            sysDept.setDeptList(getChildNodes(sysDept.getId(), rootList));
-        }
-        return chileList;
-    }
 }

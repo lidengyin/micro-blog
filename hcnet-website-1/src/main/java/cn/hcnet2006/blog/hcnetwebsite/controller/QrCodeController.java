@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+
 @Api(tags = "二维码下载接口")
-@Controller
+@RestController
 public class QrCodeController {
     @Autowired
     private SysApkService sysApkService;
@@ -30,7 +32,6 @@ public class QrCodeController {
     })
     @GetMapping("/qrcode/createCommonQRCode")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    @ResponseBody
     public void createCommonQRCode(HttpServletResponse response,
                               Long id) throws IOException {
         System.out.println("id:"+id);
@@ -41,10 +42,22 @@ public class QrCodeController {
             //返回图片内容
             response.setContentType("image/jpeg");
             stream = response.getOutputStream();
-            //String imgUrl = "./";
-            //produce the QRCode
-            QRCodeUtil.encode(sysApk.getApkUrl(),
+
+            InputStream inputStream = QRCodeUtil.encode(sysApk.getApkUrl(),
                     "/usr/local/hc_logo.png",sysApk.getApkName(),stream,true);
+            try {
+                stream = response.getOutputStream();
+                byte[] bytes = new byte[1024];
+                int len = 0;
+                while ((len = inputStream.read(bytes)) != -1) {
+                    stream.write(bytes, 0, len);
+                }
+                inputStream.close();
+                stream.close();
+                stream.flush();
+            } catch (Exception e) {
+
+            }
         }catch (Exception e){
             e.printStackTrace();
         }finally {

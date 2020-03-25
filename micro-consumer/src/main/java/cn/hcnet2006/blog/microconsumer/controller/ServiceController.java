@@ -19,7 +19,7 @@ public class ServiceController {
      */
     @RequestMapping("/services")
     public Object services(){
-        return discoveryClient.getInstances("upload-apk");
+        return discoveryClient.getInstances("hcnet-website-1");
     }
 
     /**
@@ -28,6 +28,6 @@ public class ServiceController {
      */
     @RequestMapping("/discover")
     public Object discovery(){
-        return loadBalancerClient.choose("upload-apk").getUri().toString();
+        return loadBalancerClient.choose("hcnet-website-1").getUri().toString();
     }
 }

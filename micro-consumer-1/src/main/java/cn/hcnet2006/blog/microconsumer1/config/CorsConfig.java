@@ -1,4 +1,4 @@
-package cn.hcnet2006.blog.microconsumer.config;
+package cn.hcnet2006.blog.microconsumer1.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

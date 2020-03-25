@@ -11,7 +11,13 @@ spring:
         service-name: ${spring.application.name} #注册到Consul的服务名称
         health-check-url: http://172.17.0.1:8204/actuator/health
         hostname: 172.17.0.1
-
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 100000000
+      max-request-size: 100000000
+      resolve-lazily: false
   boot:
     admin:
       client:
@@ -30,10 +36,27 @@ management:
 zuul:
   sensitive-headers: #敏感头部，设置为空，防止截获Authorization
   host:
-    connect-timeout-millis: 60000
-    socket-timeout-millis: 60000
+    connect-timeout-millis: 360000 #HTTP连接超时要比Hystrix的大
+    socket-timeout-millis: 360000 #Socket超时
+  ribbon:
+    ReadTimeout: 360000
+    ConnectTimeout: 180000
 
+#  strip-prefix: false #不会注释前缀
+#  routes:
+#    feign:
+#      path: /feign/**
+#      serviceId: micro-consumer-1 #转发到消费者
 #遵循默认路由规则：http://ZUUL_HOST:ZUUL_PORT/微服务注册中心serviceId/**
-
-
-
+ribbon:
+  ReadTimeout: 360000
+  ConnectTimeout: 360000
+#解决Feign请求超时问题
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 360000 #三分钟

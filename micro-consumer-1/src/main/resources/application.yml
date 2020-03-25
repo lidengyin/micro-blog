@@ -1,12 +1,31 @@
-server.port=8213
+server:
+  port: 8213
 spring:
-application:
-name: micro-consumer
-cloud:
-consul:
-host: 172.17.0.1
-port: 8500
-discovery:
-service-name: ${spring.application.name}
-hostname: 172.17.0.1
-health-check-url: http://172.17.0.1:8209/actuator/health
+  application:
+    name: micro-consumer-1
+  cloud:
+    consul:
+      host: 172.17.0.1
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: 172.17.0.1
+        health-check-url: http://172.17.0.1:8209/actuator/health
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+      resolve-lazily: false
+#解决Feign请求超时问题
+#hystrix的超时时间
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 500000
+        readTimeout: 500000
+        loggerLevel: basic
+

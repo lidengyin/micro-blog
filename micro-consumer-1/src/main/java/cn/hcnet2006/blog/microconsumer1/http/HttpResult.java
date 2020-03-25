@@ -1,4 +1,4 @@
-package cn.hcnet2006.blog.microconsumer.http;
+package cn.hcnet2006.blog.microconsumer1.http;
 
 /**
  * HTTP结果封装

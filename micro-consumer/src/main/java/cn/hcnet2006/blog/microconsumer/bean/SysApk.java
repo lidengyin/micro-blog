@@ -1,4 +1,4 @@
-package cn.hcnet2006.blog.hcnetwebsite.bean;
+package cn.hcnet2006.blog.microconsumer.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;

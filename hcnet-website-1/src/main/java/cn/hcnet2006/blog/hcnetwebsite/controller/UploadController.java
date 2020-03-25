@@ -9,6 +9,7 @@ import cn.hcnet2006.blog.hcnetwebsite.util.ApkInfoUtil;
 import cn.hcnet2006.blog.hcnetwebsite.util.OSSUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,9 +36,10 @@ public class UploadController {
             //@ApiImplicitParam(type = "query",name = "createBy",dataType = "String",required = true)
     })
     //@PreAuthorize("hasAuthority('ROLE_USER')")
-    @PostMapping("/apk")
-    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult upload(@ApiParam(value = "uploadFile",required = true) MultipartFile uploadFile) throws NullPointerException, FileNotFoundException {
+    @RequestMapping(value = "/apk",method = RequestMethod.POST)
+    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",
+            methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
+    public HttpResult upload(@RequestBody MultipartFile uploadFile) throws NullPointerException, FileNotFoundException {
 
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -50,19 +52,22 @@ public class UploadController {
             //文件存储名:UUID+文件类型后缀
             String apkStoName = UUID.randomUUID().toString()+
                     apkOldName.substring(apkOldName.lastIndexOf("."),apkOldName.length());
-            //
+
             //将上传文件以指定名称上传到指定文件夹
             uploadFile.transferTo(folder);
             Map<String,Object> apkInfo = ApkInfoUtil.readAPK(folder);
             //应用名
             String apkName = (String) apkInfo.get("name");
+            //String apkName = "1";
             //应用包
             String pkName = (String) apkInfo.get("pkName");
             //版本名
-            String vName = (String) apkInfo.get("vName");
+            String vName = (String)apkInfo.get("vName");
             //版本号
-            long vCode = (long) apkInfo.get("vCode");
+            long vCode = (Long) apkInfo.get("vCode");
+            //注释掉的是阿里云OSS
             url = OSSUtils.upload(folder, UUID.randomUUID().toString()+".apk");
+            System.out.println(url);
             folder.delete();
             //设置SysApk
             SysApk sysApk = new SysApk();

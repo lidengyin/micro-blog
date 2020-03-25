@@ -9,8 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Hashtable;
 
 /**
@@ -211,10 +210,14 @@ public class QRCodeUtil {
     public static void encode(String content, OutputStream output) throws Exception {
         QRCodeUtil.encode(content, null, output, false);
     }
-    public static void encode(String content, String imgPath, String text, OutputStream output, boolean needCompress)
+    public static InputStream encode(String content, String imgPath, String text, OutputStream output, boolean needCompress)
             throws Exception {
         BufferedImage image = QRCodeUtil.createImageAndFont(content, imgPath, text,needCompress);
-        ImageIO.write(image, FORMAT_NAME, output);
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        //ImageIO.write(image, FORMAT_NAME, output);
+        ImageIO.write(image, FORMAT_NAME, bs);
+        InputStream inputStream = new ByteArrayInputStream(bs.toByteArray());
+        return inputStream;
     }
 
     public static void encode(String content, String text, OutputStream output) throws Exception {

@@ -11,15 +11,30 @@ spring:
         service-name: ${spring.application.name}
         hostname: 172.17.0.1
         health-check-url: http://172.17.0.1:8209/actuator/health
+    loadbalancer:
+      ribbon:
+        enabled: false #关闭负载均衡器
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+      resolve-lazily: false
   boot:
     admin:
       client:
         url: "http://172.17.0.1:8205"
-  zipkin:
-    base-url: http://172.17.0.1:9411/
-  sleuth:
-    sampler:
-      probability: 1
+#  zipkin:
+#    base-url: http://172.17.0.1:9411/
+#  sleuth:
+#    sampler:
+#      probability: 1
+#  main:
+#    allow-bean-definition-overriding: true #允许不同的接口存在同一个服务名
+
+
 management:
   endpoints:
     web:
@@ -28,11 +43,43 @@ management:
   endpoint:
     health:
       show-details: always
+#负载均衡策略
+#service-producer: hcnet-website-1
 
+#解决Feign请求超时问题
+#hystrix的超时时间
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 360000
 
-service-producer: upload-apk
-ribbon:
-  NFLoadBalanceRuleClassName: com.netflix.loadbalancer.RandRule
 feign:
-  hystrix:
+  client:
+    config:
+      default:
+        connectTimeout: 500000
+        readTimeout: 500000
+        loggerLevel: basic
+  httpclient:
     enabled: true
+    connection-timeout: 500000
+    max-connections: 2000
+    max-connections-per-route: 50
+    time-to-live: 900
+    time-to-live-unit: seconds
+    connection-timer-repeat: 3000
+#  ### http client最大连接数，默认200
+#  feign.httpclient.maxConnections = 200
+#  ### 每个IP路由最大连接数量
+#  feign.httpclient.maxConnectionsPerRoute= 50
+#  ### 连接存活时间
+#  feign.httpclient.timeToLive = 900
+#  ### 连接存活时间单位
+#  feign.httpclient.timeToLiveUnit = SECONDS
+#  ### 连接超时时间
+#  feign.httpclient.connectionTimeout = 2000
+#  ### 连接超时定时器的执行频率
+#  fein.httpclient.connectionTimeout=3000

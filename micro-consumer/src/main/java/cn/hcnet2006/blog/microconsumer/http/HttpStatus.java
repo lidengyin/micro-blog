@@ -1,4 +1,4 @@
-package cn.hcnet2006.blog.hcnetwebsite.http;
+package cn.hcnet2006.blog.microconsumer.http;
 
 public interface HttpStatus {
 

@@ -16,7 +16,7 @@ services:
     - 8205:8205
     restart: on-failure
   micro-log-server:
-    image: 172.16.199.25:5000/log-server:0.0.1-SNAPSHOT
+    image: 172.18.0.1:5000/log-server:0.0.1-SNAPSHOT
     ports:
     - 8206:8206
   micro-monitoring-server:
@@ -25,9 +25,14 @@ services:
     - 8202:8202
     restart: on-failure
   micro-micro-consumer:
-    image: 172.16.199.25:5000/micro-consumer:0.0.1-SNAPSHOT
+    image: 172.18.0.1:5000/micro-consumer:0.0.1-SNAPSHOT
     ports:
     - 8209:8209
+    restart: on-failure
+  micro-micro-consumer-1:
+    image: 172.18.0.1:5000/micro-consumer-1:0.0.1-SNAPSHOT
+    ports:
+      - 8213:8213
     restart: on-failure
   micro-uaa-server:
     image: 172.18.0.1:5000/uaa-server:0.0.1-SNAPSHOT
@@ -44,8 +49,8 @@ services:
     ports:
       - 8207:8207
     restart: on-failure
-  micro-hcnet-website:
-    image: 172.18.0.1:5000/hcnet-website:0.0.1-SNAPSHOT
+  micro-hcnet-website-1:
+    image: 172.18.0.1:5000/hcnet-website-12:0.0.1-SNAPSHOT
     ports:
-    - 8210:8210
+    - 8211:8211
     restart: on-failure
