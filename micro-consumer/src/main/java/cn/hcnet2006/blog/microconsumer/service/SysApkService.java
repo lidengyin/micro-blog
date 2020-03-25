@@ -16,16 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 public interface SysApkService {
     @RequestMapping(value = "/apk",method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public HttpResult upload(@RequestBody MultipartFile uploadFile);
 
     @PostMapping("/select/delFlag")
     public HttpResult selectByDelFlag(@RequestParam int pageNum, @RequestParam int pageSize, @RequestParam Byte delFlag);
-//    class MyConfig {
-//        @Bean
-//        public SpringFormEncoder feignFormEncoder() {
-//            return new SpringFormEncoder();
-//        }
-//    }
+
 
 }

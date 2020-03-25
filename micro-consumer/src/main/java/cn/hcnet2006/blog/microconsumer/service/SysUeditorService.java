@@ -2,7 +2,10 @@ package cn.hcnet2006.blog.microconsumer.service;
 
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +22,15 @@ public interface SysUeditorService {
     @RequestMapping(value="/ueditor")
     public String ueditor(HttpServletRequest request);
 
-    @RequestMapping(value="/imgUpload")
-    public Map<String, Object> images (@RequestParam MultipartFile upfile,  @RequestParam HttpServletRequest request, @RequestParam HttpServletResponse response);
 
-    @RequestMapping(value="/videoUpload")
-    public Map<String, Object> videos (@RequestParam MultipartFile upfile,@RequestParam HttpServletRequest request,@RequestParam HttpServletResponse response);
+    @RequestMapping(value = "/imgUpload", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Map<String, Object> images (@RequestBody MultipartFile upfile, @RequestParam HttpServletRequest request, @RequestParam HttpServletResponse response);
 
-    @RequestMapping(value="/fileUpload")
-    public Map<String, Object> files (@RequestParam MultipartFile upfile, @RequestParam HttpServletRequest request,@RequestParam HttpServletResponse response);
+
+    @RequestMapping(value = "/videoUpload", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Map<String, Object> videos (@RequestBody MultipartFile upfile,@RequestParam HttpServletRequest request,@RequestParam HttpServletResponse response);
+
+
+    @RequestMapping(value = "/fileUpload", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Map<String, Object> files (@RequestBody MultipartFile upfile, @RequestParam HttpServletRequest request,@RequestParam HttpServletResponse response);
 }

@@ -2,6 +2,7 @@ package cn.hcnet2006.blog.microconsumer.service;
 import cn.hcnet2006.blog.microconsumer.http.HttpResult;
 import io.swagger.annotations.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
@@ -13,13 +14,12 @@ public interface SysUserService {
     @PostMapping("/login")
     public HttpResult login(@RequestParam String name,@RequestParam String password);
 
-    @PostMapping("/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public HttpResult register(@RequestParam String name,@RequestParam String password,@RequestParam Long deptId,@RequestParam String grade,@RequestParam String email,@RequestParam String mobile, @RequestParam(value = "角色ID列表") List<Long> roleList,@RequestBody MultipartFile uploadFile  );
 
-    public HttpResult register(@RequestParam String name,@RequestParam String password,@RequestParam Long deptId,@RequestParam String grade,@RequestParam String email,@RequestParam String mobile, @RequestParam(value = "角色ID列表") List<Long> roleList, MultipartFile uploadFile  );
-    @PutMapping("/update")
-
+    @RequestMapping(value = "/update", method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public HttpResult update(@RequestParam Long id,@RequestParam String name,@RequestParam String password,@RequestParam Long deptId,@RequestParam String grade,@RequestParam String email,@RequestParam String mobile,
-                             @RequestParam(value = "角色ID列表",required = false) List<Long> roleList, @RequestParam(value = "uploadFile",required = false) MultipartFile uploadFile);
+                             @RequestParam(value = "角色ID列表",required = false) List<Long> roleList, @RequestBody MultipartFile uploadFile);
 
     @PostMapping("/find/page")
     public HttpResult find(@RequestParam int pageNum,@RequestParam  int pageSize,@RequestParam  Long id,@RequestParam  String name,@RequestParam  String grade,@RequestParam  Long deptId,@RequestParam Byte delFlag);

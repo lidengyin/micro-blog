@@ -24,7 +24,9 @@ public class FeignHeadersInterceptor implements RequestInterceptor {
                 Map.Entry<String, String> entry = iterator.next();
                 //把原来的head请求头,原样设置到feign请求头中
                 //包括token
-                requestTemplate.header(entry.getKey(), entry.getValue());
+                if(entry.getKey() == "authorization" || entry.getKey().equalsIgnoreCase("authorization")){
+                    requestTemplate.header(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
