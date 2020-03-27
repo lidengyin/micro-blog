@@ -30,7 +30,7 @@ public class UeditorController {
     @RequestMapping("/content")
     @ResponseBody
    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public String findContent(@ApiParam("") String content, String content1) throws IOException {
+    public String findContent( String content, String content1) throws IOException {
        return sysUeditorService.findContent(content, content1);
     }
     @ApiOperation(value = "设置富文本本地配置",notes = "设置富文本本地配置")

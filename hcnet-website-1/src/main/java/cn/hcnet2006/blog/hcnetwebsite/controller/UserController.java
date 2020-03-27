@@ -60,7 +60,7 @@ public class UserController {
     })
     @PostMapping("/register")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam(value = "角色ID列表") List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
+    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
         //MultipartFile uploadFile = null;
         SysUser sysUser = new SysUser();
 
@@ -129,13 +129,12 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "grade",value = "年级，比如2018"),
             @ApiImplicitParam(type = "query", name = "email",value = "邮箱，确保格式正确"),
             @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确"),
-            @ApiImplicitParam(type = "query", name = "lastUpdateBy",value = "修改者"),
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
     })
     @PutMapping("/update")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult update(Long id, String name, String password, Long deptId, String grade, String email, String mobile,
-                             @RequestParam(value = "角色ID列表",required = false) List<Long> roleList, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
+                             @RequestParam(required = false) List<Long> roleList,  MultipartFile uploadFile) throws IOException,NullPointerException {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysUser sysUser = new SysUser();
@@ -160,7 +159,8 @@ public class UserController {
             sysUserService.update(sysUser);
             sysUserService.deleteUserAndRole(sysUser.getId());
             System.out.println(sysUser.getId());
-            if(roleList != null){
+            if(roleList != null || roleList.size() > 0){
+                System.out.println("需要删除的用户ID："+sysUser.getId());
                 sysUserService.deleteUserAndRole(sysUser.getId());
                 for(Long role: roleList){
                     SysUserRole sysUserRole = new SysUserRole();

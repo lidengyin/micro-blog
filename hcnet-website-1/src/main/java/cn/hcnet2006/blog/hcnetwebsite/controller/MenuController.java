@@ -25,7 +25,7 @@ public class MenuController  {
     @ApiOperation(value = "菜单注册",notes = "菜单注册，这个你注册也没什么用，菜单的授权项已经写死")
     @ApiImplicitParams({
             @ApiImplicitParam(type = "query", name = "name",value = "菜单名",required = true),
-            @ApiImplicitParam(type = "query", name = "parentId",value = "父菜单ID，一级菜单为0",required = true),
+            @ApiImplicitParam(type = "query", name = "parentId",value = "父菜单ID，一级菜单为-1",required = true),
             @ApiImplicitParam(type = "query", name = "perms",value = "菜单授权",required = true),
 
 

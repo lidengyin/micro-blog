@@ -22,7 +22,7 @@ public class DeptController {
     })
     @PostMapping("/register")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult upload(String name, Long parentId, @ApiParam(value = "uploadFile",required = true)MultipartFile uploadFile) throws FileNotFoundException {
+    public HttpResult upload(String name, Long parentId, MultipartFile uploadFile) throws FileNotFoundException {
        return sysDeptService.upload(name,parentId,uploadFile);
     }
     @ApiOperation(value = "修改机构信息",notes = "修改机构信息")
@@ -34,7 +34,7 @@ public class DeptController {
     })
     @PutMapping("/update")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult update(String name, Long id, Long parentId, Byte delFlag , @ApiParam("uploadFile") MultipartFile uploadFile) throws FileNotFoundException {
+    public HttpResult update(String name, Long id, Long parentId, Byte delFlag , MultipartFile uploadFile) throws FileNotFoundException {
         return sysDeptService.update(name,id,parentId,delFlag,uploadFile);
     }
     @ApiOperation(value = "分页查询机构信息",notes = "分页显示机构信息\n" +

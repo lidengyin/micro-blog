@@ -45,9 +45,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.hcnet2006.blog.hcnetwebsite.bean.SysArticle">
     update sys_article
     set
-        <if test="id != null and id != ''">
-          id = #{id},
-        </if>
+
         <if test="articleName != null and articleName != ''">
           article_name = #{articleName,jdbcType=VARCHAR},
         </if>
@@ -73,9 +71,9 @@
           last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
         </if>
         <if test="delFlag != null">
-          del_flag = #{delFlag,jdbcType=TINYINT}
+          del_flag = #{delFlag,jdbcType=TINYINT},
         </if>
-
+      id = #{id}
     where
         <if test="id != null and id != ''">
            id = #{id,jdbcType=BIGINT}

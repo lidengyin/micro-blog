@@ -28,8 +28,8 @@ public class ArticleController {
     })
     @PostMapping("/register")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult upload( @RequestParam(value = "文章名",required = false) String articleName, @RequestParam(value = "封面图片URL",required = false) String articleImgUrl, @RequestParam(value = "文章内容URL") String articleContentUrl,
-                             @RequestParam(value = "封面简介URL",required = false) String articleIntroUrl, @RequestParam(value = "机构ID列表",required = false)  List<Long> depts, @RequestParam(value = "成员ID列表",required = false)  List<Long> users, @RequestParam(value = "文章类型ID列表",required = false)  List<Long> types){
+    public HttpResult upload( @RequestParam String articleName, @RequestParam String articleImgUrl, @RequestParam String articleContentUrl,
+                             @RequestParam String articleIntroUrl, @RequestParam  List<Long> depts, @RequestParam  List<Long> users, @RequestParam  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();
@@ -104,8 +104,8 @@ public class ArticleController {
     })
     @PutMapping("/update")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult update(@RequestParam(value = "删除标志，－１已经删除，０正常",required = false) Byte delFlag,@RequestParam(value = "文章ID") Long id,  @RequestParam(value = "文章名",required = false) String articleName, @RequestParam(value = "封面图片URL",required = false) String articleImgUrl, @RequestParam(value = "文章内容URL") String articleContentUrl,
-                             @RequestParam(value = "封面简介URL",required = false) String articleIntroUrl, @RequestParam(value = "机构ID列表",required = false)  List<Long> depts, @RequestParam(value = "成员ID列表",required = false)  List<Long> users, @RequestParam(value = "文章类型ID列表",required = false)  List<Long> types){
+    public HttpResult update(@RequestParam(required = false) Byte delFlag,@RequestParam Long id,  @RequestParam(required = false) String articleName, @RequestParam(required = false) String articleImgUrl, @RequestParam String articleContentUrl,
+                             @RequestParam(required = false) String articleIntroUrl, @RequestParam(required = false)  List<Long> depts, @RequestParam(required = false)  List<Long> users, @RequestParam(required = false)  List<Long> types){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SysArticle sysArticle= new SysArticle();

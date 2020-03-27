@@ -32,7 +32,7 @@ public class UeditorController {
     @RequestMapping("/content")
     @ResponseBody
    @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public String findContent(@ApiParam("") String content, String content1) throws IOException {
+    public String findContent( String content, String content1) throws IOException {
         System.out.println("content1:"+content1);
         String url = ResourceUtils.getURL("").getPath()+UUID.randomUUID().toString()+".html";
         File folder = new File(url);

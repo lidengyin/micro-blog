@@ -20,7 +20,7 @@ public interface SysUeditorService {
     public String findContent(@RequestParam String content, @RequestParam String content1);
 
     @RequestMapping(value="/ueditor")
-    public String ueditor(HttpServletRequest request);
+    public String ueditor(@RequestParam HttpServletRequest request);
 
 
     @RequestMapping(value = "/imgUpload", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

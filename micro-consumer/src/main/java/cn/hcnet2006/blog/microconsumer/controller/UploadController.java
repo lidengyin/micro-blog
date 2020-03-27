@@ -4,16 +4,9 @@ import cn.hcnet2006.blog.microconsumer.http.HttpResult;
 import cn.hcnet2006.blog.microconsumer.service.SysApkService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.awt.*;
-import java.io.FileNotFoundException;
-
-import java.text.SimpleDateFormat;
-
 
 @Api(tags = "APK安装包上传接口")
 @RestController

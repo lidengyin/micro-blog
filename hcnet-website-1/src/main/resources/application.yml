@@ -66,6 +66,12 @@ feign:
     enabled: true
   httpclient:
     enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 500000
+        readTimeout: 500000
+        loggerLevel: basic
 #解决Feign请求超时问题
 #hystrix的超时时间
 hystrix:

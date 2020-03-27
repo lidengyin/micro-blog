@@ -1,6 +1,5 @@
 package cn.hcnet2006.blog.microconsumer.controller;
 
-
 import cn.hcnet2006.blog.microconsumer.http.HttpResult;
 import cn.hcnet2006.blog.microconsumer.service.SysUserService;
 
@@ -42,7 +41,11 @@ public class UserController {
     })
     @PostMapping("/register")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam(value = "角色ID列表") List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
+    public HttpResult register(String name, String password, Long deptId, String grade, String email, String mobile, @RequestParam List<Long> roleList, MultipartFile uploadFile  ) throws FileNotFoundException {
+        System.out.println("112121");
+        for(Long a : roleList){
+            System.out.println("role："+a);
+        }
         return   sysUserService.register(name, password, deptId, grade, email, mobile, roleList, uploadFile);
 
     }
@@ -55,13 +58,13 @@ public class UserController {
             @ApiImplicitParam(type = "query", name = "grade",value = "年级，比如2018"),
             @ApiImplicitParam(type = "query", name = "email",value = "邮箱，确保格式正确"),
             @ApiImplicitParam(type = "query", name = "mobile",value = "手机，确保格式正确"),
-            @ApiImplicitParam(type = "query", name = "lastUpdateBy",value = "修改者"),
             @ApiImplicitParam(type = "query", name = "delFlag",value = "删除标志，-1删除，0正常")
     })
     @PutMapping("/update")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
     public HttpResult update(Long id, String name, String password, Long deptId, String grade, String email, String mobile,
-                             @RequestParam(value = "角色ID列表",required = false) List<Long> roleList, @ApiParam(value = "uploadFile",required = false) MultipartFile uploadFile) throws IOException,NullPointerException {
+                             @RequestParam(required = false) List<Long> roleList,  MultipartFile uploadFile) throws IOException,NullPointerException {
+
         return sysUserService.update(id,name,password,deptId,grade,email,mobile,roleList,uploadFile);
     }
     @ApiOperation(value = "分页查看用户列表",notes = "分页查看用户列表:可选参数列表，以and的形式，随机组合，不加参数就是全选")

@@ -20,7 +20,11 @@
     </properties>
 
     <dependencies>
-
+        <!--集成Thymeleaf-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <!-- 使用Apache HttpClient替换Feign原生httpclient -->
 
         <dependency>

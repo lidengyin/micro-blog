@@ -16,7 +16,7 @@ public interface SysRoleService {
     public HttpResult upload(@RequestParam String name,@RequestParam String remark, @RequestBody List<Long> menus);
 
     @PutMapping("/update/list")
-    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号",required = false) List<Long> menus);
+    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(required = false) List<Long> menus);
 
     @PostMapping("/find/page")
     public HttpResult find(@RequestParam int pageNum,@RequestParam  int pageSize,@RequestParam  String name,@RequestParam  Byte delFlag);

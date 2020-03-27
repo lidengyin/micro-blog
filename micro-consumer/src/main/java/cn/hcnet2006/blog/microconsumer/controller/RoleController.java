@@ -54,7 +54,7 @@ public class RoleController {
 
     @PutMapping("/update/list")
     @CrossOrigin(origins = "*", allowCredentials = "true",allowedHeaders = "*",methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.POST, RequestMethod.PATCH})
-    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(value = "菜单编号",required = false) List<Long> menus){
+    public HttpResult update(@RequestBody List<SysRole> sysRoles, @RequestParam(required = false) List<Long> menus){
         return sysRoleService.update(sysRoles, menus);
     }
 

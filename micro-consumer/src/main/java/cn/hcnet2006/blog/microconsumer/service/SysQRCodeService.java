@@ -11,5 +11,5 @@ import javax.servlet.http.HttpServletResponse;
 @FeignClient(name = "hcnet-website-1",contextId = "e")
 public interface SysQRCodeService {
     @GetMapping(value = "/qrcode/createCommonQRCode",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Response createCommonQRCode( @RequestParam("response") HttpServletResponse response, @RequestParam("id") Long id );
+    public Response createCommonQRCode( @RequestParam HttpServletResponse response, @RequestParam Long id );
 }
